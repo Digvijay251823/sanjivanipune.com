@@ -1,0 +1,31 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* CustomScrollbar.css */
+/* Define scrollbar styles */
+/* Width */
+.custom-scrollbar {
+    overflow-y: scroll; /* Enable vertical scrollbar */
+  }
+  
+  /* Track */
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 2px; /* width of the scrollbar */
+  }
+  
+  /* Track */
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: #f1f1f1; /* color of the track */
+  }
+  
+  /* Handle */
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: #888; /* color of the draggable handle */
+  }
+  
+  /* Handle on hover */
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #555; /* color of the handle on hover */
+  }
+  

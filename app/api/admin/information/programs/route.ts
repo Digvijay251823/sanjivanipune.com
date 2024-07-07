@@ -1,0 +1,83 @@
+import { SERVER_ENDPOINT } from "@/ConfigFetch";
+import { decrypt } from "@/Utils/helpers/auth";
+import { cookies } from "next/headers";
+import { NextRequest, NextResponse } from "next/server";
+
+export const dynamic = "force-dynamic";
+
+export async function GET(req: NextRequest, res: NextResponse) {
+  try {
+    const response = await fetch(`${SERVER_ENDPOINT}/program/`);
+    if (response.ok) {
+      const responseData = await response.json();
+      return NextResponse.json({ content: responseData }, { status: 200 });
+    } else {
+      const errorData = await response.json();
+      return NextResponse.json(
+        { message: errorData.message || errorData.title },
+        { status: response.status }
+      );
+    }
+  } catch (error: any) {
+    return NextResponse.json({ message: error.message || error.title }, {});
+  }
+}
+
+export async function POST(req: NextRequest, res: NextResponse) {
+  const headers = new Headers();
+  const cookiesValue = cookies().get("AUTHRES")?.value;
+  const Parsedcookies = cookiesValue && JSON.parse(cookiesValue);
+  if (!Parsedcookies) {
+    throw new Error("Please login to access");
+  }
+  const buffer = Buffer.from(decrypt(Parsedcookies.buf).toString()).toString(
+    "base64"
+  );
+
+  headers.append("Content-Type", "application/json");
+  headers.append("Authorization", `Basic ${buffer}`);
+  try {
+    const body = await req.json();
+    const response = await fetch(`${SERVER_ENDPOINT}/program/create`, {
+      method: "POST",
+      headers: headers,
+      body: JSON.stringify(body),
+    });
+    if (response.ok) {
+      const responseData = await response.json();
+      return NextResponse.json(
+        { message: responseData.message },
+        { status: response.status }
+      );
+    } else {
+      if (response.status === 401) {
+        return NextResponse.json(
+          { message: "Your Are Not Allowed To Create Prorgam" },
+          { status: 401 }
+        );
+      }
+      if (response.status === 409) {
+        return NextResponse.json(
+          { message: "This Program already exists so can't be created" },
+          { status: 409 }
+        );
+      }
+      if (response.status === 404) {
+        return NextResponse.json(
+          { message: "Some Details You Filled Might Not Correct" },
+          { status: 404 }
+        );
+      }
+      const errorData = await response.json();
+      return NextResponse.json(
+        { message: errorData.message || errorData.title },
+        { status: response.status }
+      );
+    }
+  } catch (error: any) {
+    return NextResponse.json(
+      { message: error.message || "Unexpected exception occured" },
+      { status: 500 }
+    );
+  }
+}
