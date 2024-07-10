@@ -12,6 +12,7 @@ import {
   DocumentCheckIcon,
   DocumentIcon,
   LinkIcon,
+  XMarkIcon,
 } from "@heroicons/react/16/solid";
 import Modal from "@/Utils/Modal";
 import { POSTADMIN } from "@/actions/POSTRequests";
@@ -673,20 +674,36 @@ const Levels: React.FC<responseDataFetched<LevelToDisplay>> = ({
                     {item && expandedRow === index && (
                       <tr>
                         <td className="border-b" colSpan={10}>
-                          <div
-                            className={`p-3 m-2 rounded-3xl ${
-                              state.theme.theme === "LIGHT"
-                                ? "bg-white"
-                                : "bg-stone-950 "
-                            }`}
+                          <Modal
+                            isOpen={item && expandedRow === index}
+                            onClose={() => toggleRow(index)}
                           >
-                            {item && (
-                              <ScheduledSessionTable
-                                levelId={item?.id}
-                                levelData={selectedLevel}
-                              />
-                            )}
-                          </div>
+                            <div
+                              className={`p-3 m-2 rounded-3xl w-screen h-screen z-[2500] ${
+                                state.theme.theme === "LIGHT"
+                                  ? "bg-white"
+                                  : "bg-stone-950 "
+                              }`}
+                            >
+                              <button
+                                onClick={() => toggleRow(index)}
+                                className={`absolute right-0 flex items-center gap-2 px-2 py-1.5 rounded-lg m-5 text-red-500 text-xl ${
+                                  state.theme.theme === "LIGHT"
+                                    ? "bg-gray-100 "
+                                    : "bg-stone-900"
+                                }`}
+                              >
+                                <XMarkIcon className="h-5 w-5" />
+                                close
+                              </button>
+                              {item && (
+                                <ScheduledSessionTable
+                                  levelId={item?.id}
+                                  levelData={selectedLevel}
+                                />
+                              )}
+                            </div>
+                          </Modal>
                         </td>
                       </tr>
                     )}

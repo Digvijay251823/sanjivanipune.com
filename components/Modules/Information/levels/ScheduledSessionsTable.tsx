@@ -270,7 +270,6 @@ function ScheduleSession({
       }
     })();
   }, [dispatch]);
-  console.log(SelectedCourse);
   useEffect(() => {
     (async () => {
       try {
@@ -317,16 +316,29 @@ function ScheduleSession({
       sessionId: session.id,
       programId: level.programId,
     };
+    console.log(formData);
+    const headers = new Headers();
+    headers.append("Content-Type", "application/json");
     try {
-      const response = await POSTADMIN(
-        formData,
-        `${SERVER_ENDPOINT}/session/schedule`
-      );
-      dispatch({
-        type: "SHOW_TOAST",
-        payload: { type: "SUCCESS", message: response.message },
+      const response = await fetch(`/api/admin/information/sessions/schedule`, {
+        method: "POST",
+        headers,
+        body: JSON.stringify(formData),
       });
-      onClose();
+      if (response.ok) {
+        const responseData = await response.json();
+        dispatch({
+          type: "SHOW_TOAST",
+          payload: { type: "SUCCESS", message: responseData.message },
+        });
+        onClose();
+      } else {
+        const responseData = await response.json();
+        dispatch({
+          type: "SHOW_TOAST",
+          payload: { type: "ERROR", message: responseData.message },
+        });
+      }
     } catch (error: any) {
       dispatch({
         type: "SHOW_TOAST",

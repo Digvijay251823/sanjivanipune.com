@@ -1,9 +1,11 @@
 import { SERVER_ENDPOINT } from "@/ConfigFetch";
 import NotExistsResource from "@/Utils/NotExistsResource";
 import Rsvp from "@/components/Participants/Rsvp";
+import { unstable_noStore } from "next/cache";
 import React from "react";
 
 async function getScheduledSessions(levelId: string) {
+  unstable_noStore();
   const response = await fetch(
     `${SERVER_ENDPOINT}/session/scheduled/level/${levelId}?sort=startTime,desc`
   );

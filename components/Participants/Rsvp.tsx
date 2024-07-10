@@ -46,7 +46,7 @@ function Rsvp({ response, level }: responseDataFetched<Sessions> | any) {
     const past: ScheduledSessions[] = [];
 
     response?.content?.forEach((session: ScheduledSessions, index: number) => {
-      if (new Date(session.startTime) <= new Date()) {
+      if (new Date(session.startTime) > new Date()) {
         future.push(session);
       }
     });
