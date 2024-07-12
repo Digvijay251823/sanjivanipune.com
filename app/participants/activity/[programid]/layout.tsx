@@ -1,7 +1,5 @@
 import type { Metadata } from "next";
-import "./globals.css";
-import GlobalStateManager from "@/Utils/GlobalStateManager";
-import Toast from "@/Utils/Toast";
+import "@/app/globals.css";
 
 export const metadata: Metadata = {
   title: "register activity",

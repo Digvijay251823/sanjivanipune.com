@@ -86,11 +86,12 @@ export default function CreateVolunteer() {
     const headers = new Headers();
     headers.append("Content-Type", "application/json");
     try {
-      const response = await fetch(`/api/admin/information/volunteer/create`, {
+      const response = await fetch(`/api/admin/information/createvolunteer`, {
         method: "POST",
         headers,
         body: JSON.stringify(formData),
       });
+
       if (response.ok) {
         const responseData = await response.json();
         dispatch({

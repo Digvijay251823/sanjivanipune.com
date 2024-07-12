@@ -1,0 +1,83 @@
+import { SERVER_ENDPOINT, VOLUNTEER_ACCESS } from "@/ConfigFetch";
+import { decrypt } from "@/Utils/helpers/auth";
+import { NextRequest, NextResponse } from "next/server";
+
+export async function POST(req: NextRequest, url: string) {
+  const {
+    firstName,
+    lastName,
+    initiatedName,
+    contactNumber,
+    waNumber,
+    age,
+    email,
+    password,
+    gender,
+    address,
+    serviceInterests,
+    currentServices,
+  } = await req.json();
+  const formData: any = {
+    firstName,
+    lastName,
+    initiatedName,
+    contactNumber,
+    waNumber,
+    age,
+    email,
+    password,
+    gender,
+    address,
+    serviceInterests,
+    currentServices,
+  };
+  const header = new Headers();
+
+  const buffer =
+    VOLUNTEER_ACCESS &&
+    Buffer.from(decrypt(VOLUNTEER_ACCESS).toString()).toString("base64");
+
+  header.append("Content-Type", "application/json");
+  header.append("Authorization", `Basic ${buffer}`);
+  try {
+    const response = await fetch(`${SERVER_ENDPOINT}/volunteer/create`, {
+      method: "POST",
+      headers: header,
+      body: JSON.stringify(formData),
+    });
+
+    if (response.ok) {
+      const responseData = await response.json();
+
+      return NextResponse.json(
+        { message: responseData.message },
+        { status: response.status }
+      );
+    } else {
+      if (response.status === 409) {
+        return NextResponse.json(
+          { message: "You Already Have an account" },
+          { status: 409 }
+        );
+      }
+      if (response.status === 401) {
+        return NextResponse.json(
+          {
+            message: "You Dont Have Permission To Create Volunteer",
+          },
+          { status: 401 }
+        );
+      }
+      const errorData = await response.json();
+      return NextResponse.json(
+        { message: errorData.message || errorData.title },
+        { status: response.status }
+      );
+    }
+  } catch (error: any) {
+    return NextResponse.json(
+      { message: error.message || "Unexpected exception occured" },
+      { status: 500 }
+    );
+  }
+}

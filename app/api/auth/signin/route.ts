@@ -8,6 +8,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
   const { email, password } = await req.json();
   try {
     const encrypted = encrypt(`${email}:${password}`);
+    console.log(encrypted);
     const response = await fetch(
       `${SERVER_ENDPOINT}/auth/authenticate?email=${email}&password=${password}`
     );
