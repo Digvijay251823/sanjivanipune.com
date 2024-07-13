@@ -4,28 +4,28 @@
 
 /* CustomScrollbar.css */
 /* Define scrollbar styles */
-/* Width */
-.custom-scrollbar {
-    overflow-y: scroll; /* Enable vertical scrollbar */
+
+/* .custom-scrollbar {
+    overflow-y: scroll;
   }
   
-  /* Track */
+  
   .custom-scrollbar::-webkit-scrollbar {
-    width: 2px; /* width of the scrollbar */
+    width: 2px; 
   }
   
-  /* Track */
+  
   .custom-scrollbar::-webkit-scrollbar-track {
-    background: #f1f1f1; /* color of the track */
+    background: #f1f1f1; 
   }
   
-  /* Handle */
+  
   .custom-scrollbar::-webkit-scrollbar-thumb {
-    background: #888; /* color of the draggable handle */
+    background: #888;
   }
   
-  /* Handle on hover */
+  
   .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-    background: #555; /* color of the handle on hover */
+    background: #555;
   }
-  
+   */

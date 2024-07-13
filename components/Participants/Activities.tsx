@@ -63,14 +63,8 @@ function Activities({
             setParticipantData(responseData.content);
           } else {
             if (response.status === 404) {
+              setIsOpen(true);
               localStorage.setItem("PHONE", phoneNumber);
-              dispatch({
-                type: "SHOW_TOAST",
-                payload: {
-                  type: "ERROR",
-                  message: "Participant Not Found",
-                },
-              });
             }
             const errorData = await response.json();
             dispatch({

@@ -518,6 +518,72 @@ function CreateCourse({
     const sessionDescription = e.get("sessionDescription")?.toString();
     const sessionCode = e.get("sessionCode")?.toString();
     const durationInMinutes = e.get("durationInMinutes")?.toString();
+    try {
+      if (
+        code ||
+        name ||
+        description ||
+        sessionCode ||
+        sessionDescription ||
+        sessionName ||
+        durationInMinutes
+      ) {
+        const formData = {
+          code,
+          name,
+          description: description ? description : name,
+          sessionCode,
+          sessionDescription,
+          sessionName,
+          durationInMinutes,
+        };
+        const header = new Headers();
+        header.append("Content-Type", "application/json");
+        const courseResponse = await fetch(
+          `/api/admin/information/courses/upload`,
+          {
+            method: "POST",
+            headers: header,
+            body: JSON.stringify(formData),
+          }
+        );
+        if (courseResponse.ok) {
+          const responseData = await courseResponse.json();
+          onClose();
+          dispatch({
+            type: "SHOW_TOAST",
+            payload: { message: responseData.message, type: "SUCCESS" },
+          });
+        } else {
+          if (courseResponse.status == 409) {
+            dispatch({
+              type: "SHOW_TOAST",
+              payload: { message: "course already exist", type: "ERROR" },
+            });
+          }
+          if (courseResponse.status === 401) {
+            dispatch({
+              type: "SHOW_TOAST",
+              payload: {
+                message: "You Dont Have Access To Create Course",
+                type: "ERROR",
+              },
+            });
+          }
+          const errorData = await courseResponse.json();
+          dispatch({
+            type: "SHOW_TOAST",
+            payload: { type: "ERROR", message: errorData.message },
+          });
+        }
+      }
+    } catch (error: any) {
+      console.log(error);
+      dispatch({
+        type: "SHOW_TOAST",
+        payload: { message: error.message, type: "ERROR" },
+      });
+    }
   };
 
   return (

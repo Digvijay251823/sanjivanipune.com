@@ -303,6 +303,7 @@ function AddActivity({
       if (response.ok) {
         const responseData = await response.json();
         setActivityArray(formData);
+        onClose();
         dispatch({
           type: "SHOW_TOAST",
           payload: { type: "SUCCESS", message: responseData.message },
