@@ -78,6 +78,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
     programId,
     number,
   };
+
   try {
     const response = await fetch(`${SERVER_ENDPOINT}/level/create`, {
       method: "POST",
@@ -112,6 +113,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
         { status: response.status }
       );
     }
+    return NextResponse.json({ message: "Success" }, { status: 200 });
   } catch (error: any) {
     return NextResponse.json(
       { message: error.message || "Unexpected exception occured" },

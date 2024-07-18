@@ -15,8 +15,6 @@ import {
   XMarkIcon,
 } from "@heroicons/react/16/solid";
 import Modal from "@/Utils/Modal";
-import { POSTADMIN } from "@/actions/POSTRequests";
-import { SERVER_ENDPOINT } from "@/ConfigFetch";
 import { LinksActivator } from "@/Utils/LinksActivator";
 import CopyClipBoard from "@/Utils/CopyToClipBoard";
 import QrCode from "@/Utils/QrCodeComponent";
@@ -51,24 +49,6 @@ const Levels: React.FC<responseDataFetched<LevelToDisplay>> = ({
     } else {
       setColumnNamesArr([...columnNamesArr, option.value]);
     }
-  };
-
-  useEffect(() => {}, []);
-
-  //Function to sort
-  const SortElements = (sortBy: any) => {
-    setQueryArr((prev) => {
-      const sortIndex = prev.findIndex((item) => item.hasOwnProperty("sort"));
-      if (sortIndex !== -1) {
-        const updatedQueryArr = [...prev];
-        updatedQueryArr[sortIndex] = {
-          ...updatedQueryArr[sortIndex],
-          sort: sortBy,
-        };
-        return updatedQueryArr;
-      }
-      return prev;
-    });
   };
 
   const [customisationObjs, setCustomisationObjs] = useState({
@@ -122,7 +102,6 @@ const Levels: React.FC<responseDataFetched<LevelToDisplay>> = ({
           />
         </div>
       </div>
-
       <div
         className={`w-full rounded-3xl ${
           state.theme.theme === "LIGHT" ? "bg-gray-50" : "bg-stone-900"
@@ -843,6 +822,12 @@ function AddLevel({
       programId: selectedProgram.id,
       number: courseLevelLength + 1,
     };
+
+    if (!acceptingNewParticipants) {
+      delete formData.sessionTime;
+      delete formData.displayName;
+      delete formData.sessionDay;
+    }
     const headers = new Headers();
     setLevelArray(formData);
     headers.append("Content-Type", "application/json");
@@ -982,7 +967,7 @@ function AddLevel({
                       setPreacher2(value.id)
                     }
                     DataArr={volunteersArr}
-                    position="up"
+                    position="down"
                     volunteerid={0}
                   />
                 </div>
@@ -991,7 +976,7 @@ function AddLevel({
                   <MenuIconAndDropDown
                     setSelected={(value: VolunteerTypes) => setMentor(value.id)}
                     DataArr={volunteersArr}
-                    position="up"
+                    position="down"
                     volunteerid={
                       selectedProgram?.mentor && Number(selectedProgram?.mentor)
                     }

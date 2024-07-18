@@ -29,7 +29,7 @@ async function page({
   return (
     <div>
       <Activities response={response} />
-      <PageNavigation totalElements={response.totalElements} />
+      <PageNavigation totalElements={response.total} />
     </div>
   );
 }

@@ -37,13 +37,6 @@ const ExtraCourseRegisterationSelectedLevel: React.FC<{
   const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
-    const phoneNumber = localStorage.getItem("PHONE");
-    if (phoneNumber) {
-      setPhoneNumber(phoneNumber);
-    }
-  }, []);
-
-  useEffect(() => {
     if (phoneNumber.length === 10) {
       (async () => {
         try {

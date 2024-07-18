@@ -40,15 +40,7 @@ function Activities({
   const [selectedActivity, setSelectedActivity] = useState<
     ScheduledSessions | any
   >({});
-
   const [isOpen, setIsOpen] = useState(false);
-
-  useEffect(() => {
-    const phoneNumber = localStorage.getItem("PHONE");
-    if (phoneNumber) {
-      setPhoneNumber(phoneNumber);
-    }
-  }, []);
 
   useEffect(() => {
     if (phoneNumber.length === 10) {
@@ -84,55 +76,6 @@ function Activities({
       })();
     }
   }, [phoneNumber]);
-
-  // const handleSubmit = async (e: FormEvent) => {
-  //   e.preventDefault();
-  //   if (phoneNumber === "") {
-  //     dispatch({
-  //       type: "SHOW_TOAST",
-  //       payload: { type: "ERROR", message: "Enter your phone Number" },
-  //     });
-  //     return;
-  //   } else if (phoneNumber.length < 10) {
-  //     dispatch({
-  //       type: "SHOW_TOAST",
-  //       payload: { type: "ERROR", message: "Enter your phone Number" },
-  //     });
-  //     return;
-  //   }
-
-  //   try {
-  //     const response = await fetch(`/api/participants/phone/${phoneNumber}`);
-  //     console.log(response);
-  //     if (response.ok) {
-  //       const responseData = await response.json();
-  //       setParticipantData(responseData.content);
-  //     } else {
-  //       if (response.status === 404) {
-  //         console.log(
-  //           "participant with the phone number does not exists  please register"
-  //         );
-  //         router.push("/participants/registeration");
-  //         localStorage.setItem("PHONE", phoneNumber);
-  //       }
-  //       const errorData = await response.json();
-  //       dispatch({
-  //         type: "SHOW_TOAST",
-  //         payload: {
-  //           type: "ERROR",
-  //           message: errorData.message || errorData.statusText,
-  //         },
-  //       });
-  //     }
-  //   } catch (error: any) {
-  //     dispatch({
-  //       type: "SHOW_TOAST",
-  //       payload: { type: "ERROR", message: error.message },
-  //     });
-  //   } finally {
-  //     setIsLoading(false);
-  //   }
-  // };
 
   async function handleSubmitActivityIfNotRegister(e: FormData) {
     const firstName = e.get("firstName")?.toString();
@@ -492,7 +435,7 @@ function Activities({
                   setSelected={(value: ScheduledSessions) =>
                     setSelectedActivity(value)
                   }
-                  position="up"
+                  position="down"
                 />
               </div>
               <div className="flex flex-col gap-3 p-3">
