@@ -52,7 +52,7 @@ const ExtraCourseRegisterationSelectedLevel: React.FC<{
               ///consent screen
               setParticipantData({});
               setIsOpen(true);
-              localStorage.setItem("PHONE", phoneNumber);
+              return;
             }
             const errorData = await response.json();
             dispatch({
@@ -239,46 +239,26 @@ const ExtraCourseRegisterationSelectedLevel: React.FC<{
             : "bg-stone-900 bg-opacity-30"
         }`}
       >
-        <form className="md:w-[400px] w-[80vw]">
-          <div className="flex flex-col w-full gap-5">
+        <form className="md:w-full w-[80vw]">
+          <div className="flex flex-col  w-full gap-5">
             <div className="flex flex-col w-full gap-3">
               <label htmlFor="Phone_Number" className="font-bold md:text-xl">
-                Phone Number
+                Enter Your Phone Number
               </label>
-              <div
-                onFocus={() => setFocusMobile(true)}
-                onBlur={() => setFocusMobile(false)}
-                className={`border ${
-                  focusMobile && "ring-4"
-                } py-1 px-1 text-lg rounded w-full transition-all duration-500 flex items-center ${
+
+              <input
+                type="tel"
+                id="Phone_Number"
+                value={phoneNumber}
+                className={`outline-none w-full border px-4 py-2 text-lg ${
                   state.theme.theme === "LIGHT"
-                    ? `bg-white ${
-                        focusMobile
-                          ? "ring-blue-100 border-blue-600"
-                          : "border-gray-400"
-                      } `
-                    : `bg-stone-950  ${
-                        focusMobile
-                          ? "border-blue-700 ring-blue-950"
-                          : "border-stone-700"
-                      } `
+                    ? "bg-white  focus:border-blue-700 focus:ring-4 focus:ring-blue-200 "
+                    : "bg-stone-950 focus:border-blue-300 focus:ring-4 focus:ring-blue-950"
                 }`}
-              >
-                <input
-                  type="tel"
-                  id="Phone_Number"
-                  value={phoneNumber}
-                  className={`outline-none w-full ${
-                    state.theme.theme === "LIGHT" ? "bg-white" : "bg-stone-950"
-                  }`}
-                  onChange={handleChangePhoneNumber}
-                  max={9999999999}
-                  placeholder="9090909090"
-                />
-              </div>
-              {Errorr.type === "phoneNumber" ? (
-                <p className="text-red-400">{Errorr.message}</p>
-              ) : null}
+                onChange={handleChangePhoneNumber}
+                maxLength={10}
+                placeholder="9090909090"
+              />
             </div>
           </div>
         </form>
@@ -303,8 +283,8 @@ const ExtraCourseRegisterationSelectedLevel: React.FC<{
                 state.theme.theme === "LIGHT" ? "bg-white" : "bg-stone-950"
               }`}
             >
-              <p className="text-center font-semibold text-xl text-red-400">
-                Since You&apos;r Not Registered Fill Additional Details
+              <p className="text-center font-semibold text-xl text-orange-400">
+                Your Number Is Not Registered Please Fill Additional Details
               </p>
               <div className="flex flex-col gap-2">
                 <label htmlFor="firstName" className="font-bold text-lg">
