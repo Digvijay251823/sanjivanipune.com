@@ -1,9 +1,11 @@
 import { SERVER_ENDPOINT } from "@/ConfigFetch";
 import NotExistsResource from "@/Utils/NotExistsResource";
 import ExtraCourseRegisterationSelectedLevel from "@/components/Participants/ExtraCourseRegisterationSelectedLevel";
+import { unstable_noStore } from "next/cache";
 import React from "react";
 
 async function getLevel(levelId: string) {
+  unstable_noStore();
   const response = await fetch(`${SERVER_ENDPOINT}/level/id/${levelId}`);
   if (response.ok) {
     const responseData = await response.json();

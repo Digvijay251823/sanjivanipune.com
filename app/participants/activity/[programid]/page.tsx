@@ -1,11 +1,11 @@
 import { SERVER_ENDPOINT } from "@/ConfigFetch";
 import NotExistsResource from "@/Utils/NotExistsResource";
 import Activities from "@/components/Participants/Activities";
-import Attendance from "@/components/Participants/Attendance";
-import Rsvp from "@/components/Participants/Rsvp";
+import { unstable_noStore } from "next/cache";
 import React from "react";
 
 async function getActivities() {
+  unstable_noStore();
   const response = await fetch(`${SERVER_ENDPOINT}/activity/`);
   if (response.ok) {
     const responseData = await response.json();
