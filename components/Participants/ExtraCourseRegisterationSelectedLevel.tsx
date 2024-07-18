@@ -73,47 +73,6 @@ const ExtraCourseRegisterationSelectedLevel: React.FC<{
     }
   }, [phoneNumber]);
 
-  // const handleSubmit = async (e: FormEvent) => {
-  //   e.preventDefault();
-  //   if (phoneNumber === "") {
-  //     dispatch({
-  //       type: "SHOW_TOAST",
-  //       payload: { type: "ERROR", message: "Enter your phone Number" },
-  //     });
-  //     return;
-  //   }
-  //   try {
-  //     const response = await fetch(`/api/participants/phone/${phoneNumber}`);
-  //     if (response.ok) {
-  //       const responseData = await response.json();
-  //       setParticipantData(responseData.content);
-  //     } else {
-  //       if (response.status === 404) {
-  //         console.log(
-  //           "participant with the phone number does not exists  please register"
-  //         );
-  //         push("/participants/registeration");
-  //         localStorage.setItem("PHONE", phoneNumber);
-  //       }
-  //       const errorData = await response.json();
-  //       dispatch({
-  //         type: "SHOW_TOAST",
-  //         payload: {
-  //           type: "ERROR",
-  //           message: errorData.message || errorData.statusText,
-  //         },
-  //       });
-  //     }
-  //   } catch (error: any) {
-  //     dispatch({
-  //       type: "SHOW_TOAST",
-  //       payload: { type: "ERROR", message: error.message },
-  //     });
-  //   } finally {
-  //     setIsLoading(false);
-  //   }
-  // };
-
   async function handleSubmitGeneralRegisteration(e: FormData) {
     const formData: any = {
       participantId: participantData.id,

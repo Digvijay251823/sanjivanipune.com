@@ -1,6 +1,5 @@
 import { SERVER_ENDPOINT } from "@/ConfigFetch";
 import NotExistsResource from "@/Utils/NotExistsResource";
-import ExtraCourseRegisteration from "@/components/Participants/ExtraCourseRegisteration";
 import ExtraCourseRegisterationSelectedLevel from "@/components/Participants/ExtraCourseRegisterationSelectedLevel";
 import React from "react";
 
