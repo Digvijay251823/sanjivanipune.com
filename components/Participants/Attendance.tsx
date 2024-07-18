@@ -21,7 +21,6 @@ import { GenericErrorPage } from "./GenericErrorPage";
 
 function Attendance({ response, level }: responseDataFetched<Sessions> | any) {
   const { state, dispatch } = useGlobalState();
-  const { push } = useRouter();
 
   const [ParticipantData, setParticipantData] = useState<
     PariticipantData | any
