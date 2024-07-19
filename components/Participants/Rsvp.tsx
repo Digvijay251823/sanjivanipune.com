@@ -27,6 +27,8 @@ function Rsvp({ response, level }: responseDataFetched<Sessions> | any) {
   );
   const [selectedGender, setSelectedGender] = useState("MALE");
   const [errorMessage, setErrorMessage] = useState("");
+  const [membersComming, setMembersComming] = useState(0);
+
   const [isOpenWarning, setIsOpenWarning] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
@@ -50,6 +52,7 @@ function Rsvp({ response, level }: responseDataFetched<Sessions> | any) {
         future.push(session);
       }
     });
+
     if (future.length > 0) {
       setLatestSession(future[0]);
     }
@@ -64,12 +67,14 @@ function Rsvp({ response, level }: responseDataFetched<Sessions> | any) {
           );
           if (response.ok) {
             const responseData = await response.json();
+            setIsOpen(false);
             setParticipantData(responseData.content);
           } else {
             if (response.status === 404) {
               ///consent screen
+              setParticipantData({});
               setIsOpen(true);
-              localStorage.setItem("PHONE", phoneNumber);
+              return;
             }
             const errorData = await response.json();
             dispatch({
@@ -107,7 +112,6 @@ function Rsvp({ response, level }: responseDataFetched<Sessions> | any) {
               console.log(response.statusText);
             }
             const errorData = await response.json();
-            console.log(errorData);
           }
         } catch (error: any) {
           dispatch({
@@ -178,6 +182,7 @@ function Rsvp({ response, level }: responseDataFetched<Sessions> | any) {
           participantId: responseData.content.id,
           levelId: Number(level.id),
           programId: level.programId,
+          membersComming,
         };
         const header = new Headers();
         header.append("Content-Type", "application/json");
@@ -219,6 +224,7 @@ function Rsvp({ response, level }: responseDataFetched<Sessions> | any) {
       levelId: Number(level.id),
       programId: level.programId,
       scheduledSessionName: LatestSession.name,
+      membersComming,
       rsvp: answer,
     };
 
@@ -284,8 +290,8 @@ function Rsvp({ response, level }: responseDataFetched<Sessions> | any) {
     <div className="flex lg:flex-row flex-col h-full items-center ">
       <div className="md:h-full">
         <div className="md:ml-20 flex flex-col gap-3 mx-5">
-          <h1 className="md:mt-20 mt-10 font-bold md:text-5xl text-4xl">
-            RSVP
+          <h1 className="md:mt-20 mt-10 font-bold md:text-5xl text-3xl">
+            Confirm Your Presence
           </h1>
           <h4>you can confirm you presence for upcomming sessions here</h4>
           <div className="relative font-semibold">
@@ -296,7 +302,8 @@ function Rsvp({ response, level }: responseDataFetched<Sessions> | any) {
                   : "border-stone-700"
               }`}
             >
-              <p>Program :</p> {level?.programName}
+              <p className=" whitespace-nowrap">Program :</p>{" "}
+              {level?.programName}
             </div>
           </div>
         </div>
@@ -316,7 +323,7 @@ function Rsvp({ response, level }: responseDataFetched<Sessions> | any) {
           </div>
         </div>
       </div>
-      <div className="lg:w-[40vw] w-full p-3 max-h-[80vh] overflow-y-auto py-10 custom-scrollbar">
+      <div className="lg:w-[40vw] w-full p-3 max-h-[80vh] md:overflow-y-auto py-10">
         <div
           className={`w-full px-5 rounded-[40px] py-5 ${
             state.theme.theme === "LIGHT"
@@ -332,7 +339,7 @@ function Rsvp({ response, level }: responseDataFetched<Sessions> | any) {
                   : "border-stone-700"
               }`}
             >
-              <p className="w-max">Course :</p> {level?.name}
+              <p className=" whitespace-nowrap">Course :</p> {level?.name}
             </div>
           </div>
           <form className="w-full">
@@ -373,22 +380,7 @@ function Rsvp({ response, level }: responseDataFetched<Sessions> | any) {
                     maxLength={10}
                     placeholder="9090909090"
                   />
-                  {/* <button
-                    type="button"
-
-                    className={`text-xl font-semibold ${
-                      state.theme.theme === "LIGHT"
-                        ? `${isLoading ? "bg-white" : "bg-blue-600"} text-white`
-                        : "bg-blue-950"
-                    } rounded px-2 py-1`}
-                  >
-                    {isLoading ? <LoadingComponent /> : "Search"}
-                  </button> */}
                 </div>
-
-                {Errorr.type === "phoneNumber" ? (
-                  <p className="text-red-400">{Errorr.message}</p>
-                ) : null}
               </div>
             </div>
           </form>
@@ -410,8 +402,8 @@ function Rsvp({ response, level }: responseDataFetched<Sessions> | any) {
                   state.theme.theme === "LIGHT" ? "bg-white" : "bg-stone-950"
                 }`}
               >
-                <p className="text-center font-semibold text-xl text-red-400">
-                  Since You&apos;r Not Registered Fill Additional Details
+                <p className="text-center font-semibold text-xl text-orange-400">
+                  Your Number Is Not Registered Please Fill Additional Details
                 </p>
                 <div className="flex flex-col gap-2">
                   <label htmlFor="firstName" className="font-bold text-lg">
@@ -494,14 +486,8 @@ function Rsvp({ response, level }: responseDataFetched<Sessions> | any) {
                 </div>
               </div>
             )}
-            {LatestSession.length > 0 ? (
+            {Object.keys(LatestSession).length > 0 ? (
               <div>
-                <div className={`text-xl font-bold mx-4`}>
-                  <p>Future session</p>
-                  <p className="font-normal text-sm">
-                    confirm you presence for future sessions
-                  </p>
-                </div>
                 <div
                   className={`flex items-center gap-3 px-3 py-2.5 rounded-2xl font-bold text-2xl my-5 ${
                     state.theme.theme === "LIGHT" ? "bg-white" : "bg-stone-950"
@@ -510,68 +496,85 @@ function Rsvp({ response, level }: responseDataFetched<Sessions> | any) {
                   <p className=" whitespace-nowrap">Session :</p>
                   <p className="mx-5">{LatestSession?.name}</p>
                 </div>
-                <div className="flex items-center gap-5">
-                  {rsvpResponse ? (
-                    <>
-                      {isLoading ? (
-                        <LoadingComponent />
-                      ) : (
-                        <button
-                          type="submit"
-                          onClick={() => setAnswer("NO")}
-                          className={`w-full rounded-lg text-xl py-2 ${
-                            state.theme.theme === "LIGHT"
-                              ? "bg-red-100 text-red-600"
-                              : "bg-red-950 text-red-600 bg-opacity-35"
-                          }`}
-                          disabled={isLoading}
-                        >
-                          Cancel
-                        </button>
-                      )}
-                    </>
-                  ) : (
-                    <div
-                      className={`w-full rounded-lg text-xl py-1.5 flex justify-center ${
-                        state.theme.theme === "LIGHT"
-                          ? "bg-red-100 text-red-600"
-                          : "bg-red-950 text-red-600 bg-opacity-35"
-                      }`}
-                    >
-                      <XMarkIcon className="h-8 w-8" />
-                    </div>
-                  )}
-                  {rsvpResponse ? (
-                    <div
-                      className={`w-full rounded-lg text-xl py-1.5 flex justify-center ${
-                        state.theme.theme === "LIGHT"
-                          ? "bg-blue-100 text-blue-600"
-                          : "bg-blue-950 text-blue-600 bg-opacity-25"
-                      }`}
-                    >
-                      <CheckIcon className="h-8 w-8" />
-                    </div>
-                  ) : (
-                    <>
-                      {isLoading ? (
-                        <LoadingComponent />
-                      ) : (
-                        <button
-                          onClick={() => setAnswer("YES")}
-                          type="submit"
-                          className={`w-full rounded-lg text-xl py-2 ${
-                            state.theme.theme === "LIGHT"
-                              ? "bg-blue-100 text-blue-600"
-                              : "bg-blue-950 text-blue-600 bg-opacity-25"
-                          }`}
-                          disabled={isLoading}
-                        >
-                          Confirm
-                        </button>
-                      )}
-                    </>
-                  )}
+                <div className="flex flex-col gap-3 mb-6">
+                  <label htmlFor="" className="font-bold">
+                    How many members are comming including you?
+                  </label>
+                  <input
+                    type="number"
+                    value={membersComming}
+                    onChange={(e) => setMembersComming(Number(e.target.value))}
+                    className={`border px-4 py-1.5 rounded-lg text-lg w-full outline-none ${
+                      state.theme.theme === "LIGHT"
+                        ? "bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-200"
+                        : "bg-stone-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-950"
+                    }`}
+                  />
                 </div>
+                {Object.keys(ParticipantData).length > 0 && (
+                  <div className="flex items-center gap-5">
+                    {rsvpResponse ? (
+                      <>
+                        {isLoading ? (
+                          <LoadingComponent />
+                        ) : (
+                          <button
+                            type="submit"
+                            onClick={() => setAnswer("NO")}
+                            className={`w-full rounded-lg text-xl py-2 ${
+                              state.theme.theme === "LIGHT"
+                                ? "bg-red-100 text-red-600"
+                                : "bg-red-950 text-red-600 bg-opacity-35"
+                            }`}
+                            disabled={isLoading}
+                          >
+                            Cancel
+                          </button>
+                        )}
+                      </>
+                    ) : (
+                      <div
+                        className={`w-full rounded-lg text-xl py-1.5 flex justify-center ${
+                          state.theme.theme === "LIGHT"
+                            ? "bg-red-100 text-red-600"
+                            : "bg-red-950 text-red-600 bg-opacity-35"
+                        }`}
+                      >
+                        <XMarkIcon className="h-8 w-8" />
+                      </div>
+                    )}
+                    {rsvpResponse ? (
+                      <div
+                        className={`w-full rounded-lg text-xl py-1.5 flex justify-center ${
+                          state.theme.theme === "LIGHT"
+                            ? "bg-blue-100 text-blue-600"
+                            : "bg-blue-950 text-blue-600 bg-opacity-25"
+                        }`}
+                      >
+                        <CheckIcon className="h-8 w-8" />
+                      </div>
+                    ) : (
+                      <>
+                        {isLoading ? (
+                          <LoadingComponent />
+                        ) : (
+                          <button
+                            onClick={() => setAnswer("YES")}
+                            type="submit"
+                            className={`w-full rounded-lg text-xl py-2 ${
+                              state.theme.theme === "LIGHT"
+                                ? "bg-blue-100 text-blue-600"
+                                : "bg-blue-950 text-blue-600 bg-opacity-25"
+                            }`}
+                            disabled={isLoading}
+                          >
+                            Confirm
+                          </button>
+                        )}
+                      </>
+                    )}
+                  </div>
+                )}
               </div>
             ) : (
               <p className="text-xl font-bold text-red-400 text-center">

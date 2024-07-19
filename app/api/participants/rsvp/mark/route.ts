@@ -10,6 +10,7 @@ export async function POST(req: NextRequest) {
     programId,
     scheduledSessionName,
     rsvp,
+    membersComming,
   } = await req.json();
 
   header.append("Content-Type", "application/json");
@@ -20,6 +21,7 @@ export async function POST(req: NextRequest) {
     programId,
     scheduledSessionName,
     rsvp,
+    membersComming,
   };
 
   try {
@@ -47,6 +49,10 @@ export async function POST(req: NextRequest) {
         { status: response.status }
       );
     }
+    return NextResponse.json(
+      { message: " Successfully marked rsvp" },
+      { status: 200 }
+    );
   } catch (error: any) {
     return NextResponse.json(
       { message: error.message || error.title },

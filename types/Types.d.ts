@@ -27,6 +27,7 @@ interface ActivityData {
   courseId: number;
   courseCode: string;
   courseName: string;
+  membersComming: number;
   rsvp: string;
   activityDate: string;
 }

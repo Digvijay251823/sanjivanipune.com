@@ -1,9 +1,7 @@
 "use client";
-import { SERVER_ENDPOINT } from "@/ConfigFetch";
-import LoadingComponent from "@/Utils/Icons/LoadingComponent";
+
 import { useGlobalState } from "@/Utils/State";
 import SubmitHandlerButton from "@/Utils/SubmitHandlerButton";
-import { POST } from "@/actions/POSTRequests";
 import { ChevronDownIcon } from "@heroicons/react/16/solid";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -266,7 +264,8 @@ function Attendance({ response, level }: responseDataFetched<Sessions> | any) {
                   : "border-stone-700"
               }`}
             >
-              <p>Program :</p> {level?.programName}
+              <p className=" whitespace-nowrap">Program :</p>{" "}
+              {level?.programName}
             </div>
           </div>
         </div>
@@ -302,7 +301,7 @@ function Attendance({ response, level }: responseDataFetched<Sessions> | any) {
                   : "border-stone-700"
               }`}
             >
-              <p>Course :</p> {level?.name}
+              <p className=" whitespace-nowrap">Course :</p> {level?.name}
             </div>
           </div>
           <form className="w-full">

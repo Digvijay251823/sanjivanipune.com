@@ -22,7 +22,6 @@ export async function POST(req: NextRequest, res: NextResponse) {
     sessionId,
     programId,
   };
-  console.log(formData);
   const header = new Headers();
   const cookiesValue = cookies().get("AUTHRES")?.value;
   const Parsedcookies = cookiesValue && JSON.parse(cookiesValue);

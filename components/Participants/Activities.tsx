@@ -261,7 +261,7 @@ function Activities({
                   : "border-stone-700 bg-stone-950"
               }`}
             >
-              <p>Program :</p> {response?.name}
+              <p className=" whitespace-nowrap">Program :</p> {response?.name}
             </div>
           </div>
         </div>
@@ -343,7 +343,7 @@ function Activities({
           <form
             ref={formRef}
             action={isOpen ? handleSubmitActivityIfNotRegister : handleActivity}
-            className="max-h-[80vh] overflow-y-auto custom-scrollbar"
+            className="max-h-[80vh] md:overflow-y-auto"
           >
             {isOpen && (
               <div

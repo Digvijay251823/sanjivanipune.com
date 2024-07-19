@@ -247,6 +247,25 @@ const Activities: React.FC<responseDataFetched<ActivityData>> = ({
                   isColumnHeader={true}
                   columnNamesArray={columnNamesArr}
                   stylesClassNames=" whitespace-nowrap font-bold px-5 pb-3"
+                  ColumnToHide="Participant_Family_Members_Comming"
+                >
+                  <SortableIcon
+                    fieldName={
+                      isSpecialNativeQuery
+                        ? "membersComming"
+                        : "members_comming"
+                    }
+                    tableHeading={"Family Members Comming"}
+                    isSorted={
+                      urlSearchParams.sort === "members_comming" ||
+                      urlSearchParams.sort === "membersComming"
+                    }
+                  />
+                </HidableColumns>
+                <HidableColumns
+                  isColumnHeader={true}
+                  columnNamesArray={columnNamesArr}
+                  stylesClassNames=" whitespace-nowrap font-bold px-5 pb-3"
                   ColumnToHide="Participant_Date_Activity"
                 >
                   <div className="flex items-center gap-2">
@@ -424,6 +443,28 @@ const Activities: React.FC<responseDataFetched<ActivityData>> = ({
                       )}
                     </HidableColumns>
                     <HidableColumns
+                      ColumnToHide="Participant_Family_Members_Comming"
+                      isColumnHeader={false}
+                      columnNamesArray={columnNamesArr}
+                      stylesClassNames={`text-center border-b ${
+                        customisationObjs.cellSize === "bigger"
+                          ? "py-2"
+                          : customisationObjs.cellSize === "biggest"
+                          ? "py-3"
+                          : "py-1"
+                      } ${
+                        state.theme.theme === "LIGHT"
+                          ? "border-b-gray-200"
+                          : "border-b-stone-800"
+                      }`}
+                    >
+                      {item.membersComming && item.membersComming > 0 ? (
+                        <p>{item.membersComming}</p>
+                      ) : (
+                        <p className="text-gray-400">Not Available</p>
+                      )}
+                    </HidableColumns>
+                    <HidableColumns
                       ColumnToHide="Participant_Date_Activity"
                       isColumnHeader={false}
                       columnNamesArray={columnNamesArr}
@@ -439,8 +480,8 @@ const Activities: React.FC<responseDataFetched<ActivityData>> = ({
                           : "border-b-stone-800"
                       }`}
                     >
-                      {item.activityName === "Attendance" ? (
-                        item.activityDate
+                      {item.activityDate.length > 0 ? (
+                        <DateFormatter dateString={item.activityDate} />
                       ) : (
                         <DateFormatter dateString={item.activityDate} />
                       )}

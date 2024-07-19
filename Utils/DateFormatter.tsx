@@ -15,7 +15,7 @@ const DateFormatter = ({ dateString }: { dateString: string }) => {
 
   return (
     <div className="w-max">
-      <p>{formattedDate}</p>
+      <p>{formattedDate === "NaN-NaN-NaN" ? dateString : formattedDate}</p>
     </div>
   );
 };
