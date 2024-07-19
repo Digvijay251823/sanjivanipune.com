@@ -25,6 +25,7 @@ function Attendance({ response, level }: responseDataFetched<Sessions> | any) {
   const [ParticipantData, setParticipantData] = useState<
     PariticipantData | any
   >({});
+  const formRef = useRef<HTMLFormElement>(null);
   const [isOpenWarning, setIsOpenWarning] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [focusMobile, setFocusMobile] = useState(false);
@@ -76,7 +77,7 @@ function Attendance({ response, level }: responseDataFetched<Sessions> | any) {
               ///consent screen
               setParticipantData({});
               setIsOpen(true);
-              localStorage.setItem("PHONE", phoneNumber);
+              return;
             }
             const errorData = await response.json();
             dispatch({
@@ -153,14 +154,24 @@ function Attendance({ response, level }: responseDataFetched<Sessions> | any) {
           levelId: Number(level.id),
           programId: level.programId,
         };
-        const responseAttendance = await POST(
-          formData,
-          `${SERVER_ENDPOINT}/attendance/mark`
-        );
-        dispatch({
-          type: "SHOW_TOAST",
-          payload: { type: "ERROR", message: responseAttendance.message },
+        const response = await fetch(`/api/participants/attendance`, {
+          method: "POST",
+          headers,
+          body: JSON.stringify(formData),
         });
+        if (response.ok) {
+          const responseData = await response.json();
+          dispatch({
+            type: "SHOW_TOAST",
+            payload: { type: "SUCCESS", message: responseData.message },
+          });
+        } else {
+          const responseData = await response.json();
+          dispatch({
+            type: "SHOW_TOAST",
+            payload: { type: "ERROR", message: responseData.message },
+          });
+        }
       }
     } catch (error: any) {
       localStorage.removeItem("PHONE");
@@ -170,6 +181,8 @@ function Attendance({ response, level }: responseDataFetched<Sessions> | any) {
         payload: { type: "ERROR", message: error.message },
       });
       return;
+    } finally {
+      formRef.current?.reset();
     }
   }
 
@@ -181,19 +194,33 @@ function Attendance({ response, level }: responseDataFetched<Sessions> | any) {
       programId: level.programId,
     };
     try {
-      const response = await POST(
-        formData,
-        `${SERVER_ENDPOINT}/attendance/mark`
-      );
-      dispatch({
-        type: "SHOW_TOAST",
-        payload: { type: "ERROR", message: response.message },
+      const headers = new Headers();
+      headers.append("Content-Type", "application/json");
+      const response = await fetch(`/api/participants/attendance`, {
+        method: "POST",
+        headers,
+        body: JSON.stringify(formData),
       });
+      if (response.ok) {
+        const responseData = await response.json();
+        dispatch({
+          type: "SHOW_TOAST",
+          payload: { type: "SUCCESS", message: responseData.message },
+        });
+      } else {
+        const responseData = await response.json();
+        dispatch({
+          type: "SHOW_TOAST",
+          payload: { type: "ERROR", message: responseData.message },
+        });
+      }
     } catch (error: any) {
       dispatch({
         type: "SHOW_TOAST",
         payload: { type: "ERROR", message: error.message },
       });
+    } finally {
+      formRef.current?.reset();
     }
   }
 
@@ -333,6 +360,7 @@ function Attendance({ response, level }: responseDataFetched<Sessions> | any) {
               action={
                 isOpen ? handleSubmitAttendanceIfNotRegistered : handleAttedance
               }
+              ref={formRef}
             >
               {isOpen && (
                 <div
@@ -340,8 +368,8 @@ function Attendance({ response, level }: responseDataFetched<Sessions> | any) {
                     state.theme.theme === "LIGHT" ? "bg-white" : "bg-stone-950"
                   }`}
                 >
-                  <p className="text-center font-semibold text-xl text-red-400">
-                    Since You&apos;r Not Registered Fill Additional Details
+                  <p className="text-center font-semibold text-xl text-orange-400">
+                    Your Number Is Not Registered Please Fill Additional Details
                   </p>
                   <div className="flex flex-col gap-2">
                     <label htmlFor="firstName" className="font-bold text-lg">

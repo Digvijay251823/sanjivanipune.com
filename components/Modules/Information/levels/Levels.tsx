@@ -543,18 +543,18 @@ const Levels: React.FC<responseDataFetched<LevelToDisplay>> = ({
                         {item && (
                           <div className="flex items-center gap-5">
                             <Link
-                              href={`${linksActivator}/participants/activity/${item.id}`}
+                              href={`${linksActivator}/participants/activity/${item.programId}`}
                               className="text-blue-600 underline flex items-center"
                             >
                               <LinkIcon className="h-5 w-5" />
                               link
                             </Link>
                             <QrCode
-                              url={`${linksActivator}/participants/activity/${item.id}`}
+                              url={`${linksActivator}/participants/activity/${item.programId}`}
                               Content="something"
                             />
                             <CopyClipBoard
-                              url={`${linksActivator}/participants/activity/${item.id}`}
+                              url={`${linksActivator}/participants/activity/${item.programId}`}
                               NotCopied={
                                 <DocumentCheckIcon className="h-5 w-6 " />
                               }

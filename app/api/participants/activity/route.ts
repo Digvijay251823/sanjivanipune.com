@@ -2,22 +2,25 @@ import { SERVER_ENDPOINT } from "@/ConfigFetch";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest, res: NextResponse) {
-  const { scheduledSessionId, participantId, levelId, programId } =
+  const { activityId, participantId, programId, activityDate } =
     await req.json();
   const formData = {
-    scheduledSessionId,
+    activityId,
     participantId,
-    levelId,
     programId,
+    activityDate,
   };
   const header = new Headers();
   header.append("Content-Type", "application/json");
   try {
-    const response = await fetch(`${SERVER_ENDPOINT}/attendance/mark`, {
-      method: "POST",
-      headers: header,
-      body: JSON.stringify(formData),
-    });
+    const response = await fetch(
+      `${SERVER_ENDPOINT}/participant-activity/register`,
+      {
+        method: "POST",
+        headers: header,
+        body: JSON.stringify(formData),
+      }
+    );
     if (response.ok) {
       const responseData = await response.json();
       return NextResponse.json(
@@ -27,7 +30,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
     } else {
       if (response.status === 409) {
         return NextResponse.json(
-          { message: "You Have Already Marked Attendance" },
+          { message: "This Entry Already exists" },
           { status: 409 }
         );
       }
@@ -47,6 +50,6 @@ export async function POST(req: NextRequest, res: NextResponse) {
       );
     }
   } catch (error: any) {
-    return NextResponse.json({ message: error.message });
+    return NextResponse.json({ message: error.message }, { status: 500 });
   }
 }

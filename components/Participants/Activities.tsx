@@ -31,6 +31,7 @@ function Activities({
   const [ParticipantData, setParticipantData] = useState<
     PariticipantData | any
   >({});
+  const formRef = useRef<HTMLFormElement>(null);
   const [isSuccess, setIsSuccess] = useState(false);
   const [focusMobile, setFocusMobile] = useState(false);
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -56,7 +57,7 @@ function Activities({
           } else {
             if (response.status === 404) {
               setIsOpen(true);
-              localStorage.setItem("PHONE", phoneNumber);
+              return;
             }
             const errorData = await response.json();
             dispatch({
@@ -146,26 +147,36 @@ function Activities({
           programId: response.id,
           activityDate: startDate && new Date(startDate).toISOString(),
         };
-
-        const responseActivity = await POST(
-          formData,
-          `${SERVER_ENDPOINT}/participant-activity/register`
-        );
-        dispatch({
-          type: "SHOW_TOAST",
-          payload: { type: "SUCCESS", message: responseActivity.message },
+        const responseActivity = await fetch(`/api/participants/activity`, {
+          method: "POST",
+          headers,
+          body: JSON.stringify(formData),
         });
-        localStorage.removeItem("PHONE");
+        if (responseActivity.ok) {
+          const responseData = await responseActivity.json();
+          dispatch({
+            type: "SHOW_TOAST",
+            payload: { type: "SUCCESS", message: responseData.message },
+          });
+        } else {
+          const responseData = await responseActivity.json();
+          dispatch({
+            type: "SHOW_TOAST",
+            payload: { type: "ERROR", message: responseData.message },
+          });
+        }
       }
     } catch (error: any) {
       dispatch({
         type: "SHOW_TOAST",
         payload: { type: "ERROR", message: error.message },
       });
+    } finally {
+      formRef.current?.reset();
     }
   }
 
-  async function handleAttedance(e: FormData) {
+  async function handleActivity(e: FormData) {
     const startDate = e.get("activityDate")?.toString();
     if (!startDate) {
       dispatch({
@@ -181,16 +192,33 @@ function Activities({
       activityDate: startDate && new Date(startDate).toISOString(),
     };
     try {
-      const response = await POST(
-        formData,
-        `${SERVER_ENDPOINT}/participant-activity/register`
-      );
-      setIsSuccess(true);
+      const headers = new Headers();
+      headers.append("Content-Type", "application/json");
+      const response = await fetch(`/api/participants/activity`, {
+        method: "POST",
+        headers,
+        body: JSON.stringify(formData),
+      });
+      if (response.ok) {
+        const responseData = await response.json();
+        dispatch({
+          type: "SHOW_TOAST",
+          payload: { type: "SUCCESS", message: responseData.message },
+        });
+      } else {
+        const responseData = await response.json();
+        dispatch({
+          type: "SHOW_TOAST",
+          payload: { type: "ERROR", message: responseData.message },
+        });
+      }
     } catch (error: any) {
       dispatch({
         type: "SHOW_TOAST",
         payload: { type: "ERROR", message: error.message },
       });
+    } finally {
+      formRef.current?.reset();
     }
   }
 
@@ -299,21 +327,7 @@ function Activities({
                     maxLength={10}
                     placeholder="9090909090"
                   />
-                  {/* <button
-                    type="button"
-                    onClick={handleSubmit}
-                    className={`text-xl font-semibold ${
-                      state.theme.theme === "LIGHT"
-                        ? `${isLoading ? "bg-white" : "bg-blue-600"} text-white`
-                        : "bg-blue-950"
-                    } rounded px-2 py-1`}
-                  >
-                    {isLoading ? <LoadingComponent /> : "Search"}
-                  </button> */}
                 </div>
-                {Errorr.type === "phoneNumber" ? (
-                  <p className="text-red-400">{Errorr.message}</p>
-                ) : null}
               </div>
             </div>
           </form>
@@ -327,9 +341,8 @@ function Activities({
           </div>
 
           <form
-            action={
-              isOpen ? handleSubmitActivityIfNotRegister : handleAttedance
-            }
+            ref={formRef}
+            action={isOpen ? handleSubmitActivityIfNotRegister : handleActivity}
             className="max-h-[80vh] overflow-y-auto custom-scrollbar"
           >
             {isOpen && (
@@ -338,8 +351,8 @@ function Activities({
                   state.theme.theme === "LIGHT" ? "bg-white" : "bg-stone-950"
                 }`}
               >
-                <p className="text-center font-semibold text-xl text-red-400">
-                  Since You&apos;r Not Registered Fill Additional Details
+                <p className="text-center font-semibold text-xl text-orange-400">
+                  Your Number Is Not Registered Please Fill Additional Details
                 </p>
                 <div className="flex flex-col gap-2">
                   <label htmlFor="firstName" className="font-bold text-lg">
