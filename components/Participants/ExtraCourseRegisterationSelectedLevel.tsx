@@ -245,7 +245,6 @@ const ExtraCourseRegisterationSelectedLevel: React.FC<{
               <label htmlFor="Phone_Number" className="font-bold md:text-xl">
                 Enter Your Phone Number
               </label>
-
               <input
                 type="tel"
                 id="Phone_Number"
@@ -257,7 +256,7 @@ const ExtraCourseRegisterationSelectedLevel: React.FC<{
                 }`}
                 onChange={handleChangePhoneNumber}
                 maxLength={10}
-                placeholder="9090909090"
+                placeholder="Enter Your Phone Number"
               />
             </div>
           </div>
@@ -299,7 +298,6 @@ const ExtraCourseRegisterationSelectedLevel: React.FC<{
                       ? `bg-white focus:ring-blue-100 focus:border-blue-600 border-gray-400`
                       : `bg-stone-950 focus:border-blue-700 focus:ring-blue-950 border-stone-700`
                   }`}
-                  placeholder="John"
                   required
                 />
               </div>
@@ -316,7 +314,6 @@ const ExtraCourseRegisterationSelectedLevel: React.FC<{
                       ? `bg-white focus:ring-blue-100 focus:border-blue-600 border-gray-400`
                       : `bg-stone-950 focus:border-blue-700 focus:ring-blue-950 border-stone-700`
                   }`}
-                  placeholder="Doe"
                   required
                 />
               </div>
@@ -335,7 +332,6 @@ const ExtraCourseRegisterationSelectedLevel: React.FC<{
                   }`}
                   max={100}
                   min={3}
-                  placeholder="43"
                   required
                 />
               </div>
@@ -361,7 +357,6 @@ const ExtraCourseRegisterationSelectedLevel: React.FC<{
                       ? `bg-white focus:ring-blue-100 focus:border-blue-600 border-gray-400`
                       : `bg-stone-950 focus:border-blue-700 focus:ring-blue-950 border-stone-700`
                   }`}
-                  placeholder="Pune"
                   required
                 />
               </div>

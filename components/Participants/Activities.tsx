@@ -293,7 +293,7 @@ function Activities({
             <div className="flex flex-col w-full gap-5">
               <div className="flex flex-col w-full gap-3">
                 <label htmlFor="Phone_Number" className="font-bold md:text-xl">
-                  Phone Number
+                  Enter Your Phone Number
                 </label>
                 <div
                   onFocus={() => setFocusMobile(true)}
@@ -325,7 +325,7 @@ function Activities({
                     }`}
                     onChange={handleChangePhoneNumber}
                     maxLength={10}
-                    placeholder="9090909090"
+                    placeholder="Enter Your Phone Number"
                   />
                 </div>
               </div>
@@ -367,7 +367,6 @@ function Activities({
                         ? `bg-white focus:ring-blue-100 focus:border-blue-600 border-gray-400`
                         : `bg-stone-950 focus:border-blue-700 focus:ring-blue-950 border-stone-700`
                     }`}
-                    placeholder="John"
                     required
                   />
                 </div>
@@ -384,7 +383,6 @@ function Activities({
                         ? `bg-white focus:ring-blue-100 focus:border-blue-600 border-gray-400`
                         : `bg-stone-950 focus:border-blue-700 focus:ring-blue-950 border-stone-700`
                     }`}
-                    placeholder="Doe"
                     required
                   />
                 </div>
@@ -403,7 +401,6 @@ function Activities({
                     }`}
                     max={100}
                     min={3}
-                    placeholder="43"
                     required
                   />
                 </div>
@@ -429,7 +426,6 @@ function Activities({
                         ? `bg-white focus:ring-blue-100 focus:border-blue-600 border-gray-400`
                         : `bg-stone-950 focus:border-blue-700 focus:ring-blue-950 border-stone-700`
                     }`}
-                    placeholder="Pune"
                     required
                   />
                 </div>
@@ -466,7 +462,6 @@ function Activities({
                   }`}
                   name="description"
                   id="Service_description"
-                  placeholder="write some description"
                 />
               </div>
               <div className="flex flex-col gap-3 px-3 w-max mb-5">

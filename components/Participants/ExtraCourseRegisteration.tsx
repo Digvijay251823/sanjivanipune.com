@@ -271,23 +271,8 @@ const ExtraCourseRegisteration: React.FC<
                   }`}
                   onChange={handleChangePhoneNumber}
                   max={9999999999}
-                  placeholder="9090909090"
                 />
-                {/* <button
-                  type="button"
-                  onClick={handleSubmit}
-                  className={`text-xl font-semibold ${
-                    state.theme.theme === "LIGHT"
-                      ? `${isLoading ? "bg-white" : "bg-blue-600"} text-white`
-                      : "bg-blue-950"
-                  } rounded px-2 py-1`}
-                >
-                  {isLoading ? <LoadingComponent /> : "Search"}
-                </button> */}
               </div>
-              {Errorr.type === "phoneNumber" ? (
-                <p className="text-red-400">{Errorr.message}</p>
-              ) : null}
             </div>
           </div>
         </form>
@@ -312,8 +297,8 @@ const ExtraCourseRegisteration: React.FC<
                 state.theme.theme === "LIGHT" ? "bg-white" : "bg-stone-950"
               }`}
             >
-              <p className="text-center font-semibold text-xl text-red-400">
-                Since You&apos;r Not Registered Fill Additional Details
+              <p className="text-center font-semibold text-xl text-orange-400">
+                Your Number Is Not Registered Please Fill Additional Details
               </p>
               <div className="flex flex-col gap-2">
                 <label htmlFor="firstName" className="font-bold text-lg">
@@ -328,7 +313,6 @@ const ExtraCourseRegisteration: React.FC<
                       ? `bg-white focus:ring-blue-100 focus:border-blue-600 border-gray-400`
                       : `bg-stone-950 focus:border-blue-700 focus:ring-blue-950 border-stone-700`
                   }`}
-                  placeholder="John"
                   required
                 />
               </div>
@@ -345,7 +329,6 @@ const ExtraCourseRegisteration: React.FC<
                       ? `bg-white focus:ring-blue-100 focus:border-blue-600 border-gray-400`
                       : `bg-stone-950 focus:border-blue-700 focus:ring-blue-950 border-stone-700`
                   }`}
-                  placeholder="Doe"
                   required
                 />
               </div>
@@ -364,7 +347,6 @@ const ExtraCourseRegisteration: React.FC<
                   }`}
                   max={100}
                   min={3}
-                  placeholder="43"
                   required
                 />
               </div>
@@ -390,7 +372,6 @@ const ExtraCourseRegisteration: React.FC<
                       ? `bg-white focus:ring-blue-100 focus:border-blue-600 border-gray-400`
                       : `bg-stone-950 focus:border-blue-700 focus:ring-blue-950 border-stone-700`
                   }`}
-                  placeholder="Pune"
                   required
                 />
               </div>

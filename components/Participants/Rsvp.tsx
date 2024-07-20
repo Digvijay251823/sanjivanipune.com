@@ -49,6 +49,7 @@ function Rsvp({ response, level }: responseDataFetched<Sessions> | any) {
 
     response?.content?.forEach((session: ScheduledSessions, index: number) => {
       if (new Date(session.startTime) > new Date()) {
+        console.log(session);
         future.push(session);
       }
     });
@@ -346,7 +347,7 @@ function Rsvp({ response, level }: responseDataFetched<Sessions> | any) {
             <div className="flex flex-col w-full gap-5">
               <div className="flex flex-col w-full gap-3">
                 <label htmlFor="Phone_Number" className="font-bold md:text-xl">
-                  Phone Number
+                  Enter Your Phone Number
                 </label>
                 <div
                   onFocus={() => setFocusMobile(true)}
@@ -378,7 +379,7 @@ function Rsvp({ response, level }: responseDataFetched<Sessions> | any) {
                     }`}
                     onChange={handleChangePhoneNumber}
                     maxLength={10}
-                    placeholder="9090909090"
+                    placeholder="Enter Your Phone Number"
                   />
                 </div>
               </div>
@@ -387,7 +388,7 @@ function Rsvp({ response, level }: responseDataFetched<Sessions> | any) {
           <div className="w-full my-5">
             {Object.keys(ParticipantData).length > 0 ? (
               <div>
-                <p className="font-extrabold text-2xl ">Hare Krishna!!</p>
+                <p className="font-extrabold text-2xl">Hare Krishna!!</p>
                 <p className="text-xl font-semibold">{`${ParticipantData.firstName} ${ParticipantData.lastName}`}</p>
               </div>
             ) : null}
@@ -418,7 +419,6 @@ function Rsvp({ response, level }: responseDataFetched<Sessions> | any) {
                         ? `bg-white focus:ring-blue-100 focus:border-blue-600 border-gray-400`
                         : `bg-stone-950 focus:border-blue-700 focus:ring-blue-950 border-stone-700`
                     }`}
-                    placeholder="John"
                     required
                   />
                 </div>
@@ -435,7 +435,6 @@ function Rsvp({ response, level }: responseDataFetched<Sessions> | any) {
                         ? `bg-white focus:ring-blue-100 focus:border-blue-600 border-gray-400`
                         : `bg-stone-950 focus:border-blue-700 focus:ring-blue-950 border-stone-700`
                     }`}
-                    placeholder="Doe"
                     required
                   />
                 </div>
@@ -454,7 +453,6 @@ function Rsvp({ response, level }: responseDataFetched<Sessions> | any) {
                     }`}
                     max={100}
                     min={3}
-                    placeholder="43"
                     required
                   />
                 </div>
@@ -480,7 +478,6 @@ function Rsvp({ response, level }: responseDataFetched<Sessions> | any) {
                         ? `bg-white focus:ring-blue-100 focus:border-blue-600 border-gray-400`
                         : `bg-stone-950 focus:border-blue-700 focus:ring-blue-950 border-stone-700`
                     }`}
-                    placeholder="Pune"
                     required
                   />
                 </div>
