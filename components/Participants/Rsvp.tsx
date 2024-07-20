@@ -508,7 +508,7 @@ function Rsvp({ response, level }: responseDataFetched<Sessions> | any) {
                     }`}
                   />
                 </div>
-                {Object.keys(ParticipantData).length > 0 && (
+                {phoneNumber.length > 0 && (
                   <div className="flex items-center gap-5">
                     {rsvpResponse ? (
                       <>
