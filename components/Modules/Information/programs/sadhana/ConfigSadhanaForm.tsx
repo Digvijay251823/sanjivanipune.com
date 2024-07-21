@@ -201,11 +201,10 @@ export function BNR({ label }: { label: string }) {
     <div className="flex flex-col gap-1 w-full">
       <label className="font-semibold" htmlFor="BNR">
         {label}
-        <i className="text-gray-500 font-normal">in minutes</i>
         <i className="text-red-400">*</i>
       </label>
       <input
-        type="number"
+        type="text"
         id="BNR"
         name="nonPrabhupadaBookReading"
         placeholder="Non Prabhupada Book Reading name"
@@ -319,7 +318,7 @@ export function AA({
   onChange,
 }: {
   label: string;
-  onChange: (object: { target: { name: any; value: any } }) => void;
+  onChange: (object: { target: { name: any; value: string } }) => void;
 }) {
   const { state } = useGlobalState();
   const [selectionOpen, setSelectionOpen] = useState(false);
@@ -606,7 +605,7 @@ export const FormListItems = [
   {
     id: 5,
     type: "First 8 rounds completed time ",
-    valueType: "Number",
+    valueType: "Time",
     functionName: "F8RCT",
     databaseField: "first8RoundsCompletedTime",
   },
@@ -627,7 +626,7 @@ export const FormListItems = [
   {
     id: 8,
     type: "Next 8 rounds completed time ",
-    valueType: "Number",
+    valueType: "Time",
     functionName: "N8RCT",
     databaseField: "next8RoundsCompletedTime",
   },

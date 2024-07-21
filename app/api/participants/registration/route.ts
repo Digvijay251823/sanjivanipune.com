@@ -21,11 +21,11 @@ export async function POST(req: NextRequest, res: NextResponse) {
       headers: header,
       body: JSON.stringify(formData),
     });
+
     if (response.ok) {
-      const responseData = await response.json();
       return NextResponse.json(
-        { message: responseData.message },
-        { status: response.status }
+        { message: "Successfully registerd participant" },
+        { status: 200 }
       );
     } else {
       if (response.status === 409) {

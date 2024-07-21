@@ -5,11 +5,19 @@ import { useGlobalState } from "@/Utils/State";
 import SubmitHandlerButton from "@/Utils/SubmitHandlerButton";
 import { POST } from "@/actions/POSTRequests";
 
+const formatDateInput = (date: Date) => {
+  const d = new Date(date);
+  const month = ("0" + (d.getMonth() + 1)).slice(-2);
+  const day = ("0" + d.getDate()).slice(-2);
+  const year = d.getFullYear();
+  return `${year}-${month}-${day}`;
+};
+
 function formatDate(date: Date) {
   // Extract day, month, and year components
-  const day = date.getDate().toString().padStart(2, "0"); // Ensure two-digit day
+  const year = date.getFullYear().toString(); // Get last two digits of the year
   const month = (date.getMonth() + 1).toString().padStart(2, "0"); // Month is zero-based
-  const year = date.getFullYear().toString().slice(2); // Get last two digits of the year
+  const day = date.getDate().toString().padStart(2, "0"); // Ensure two-digit day
 
   // Format the date as DD-MM-YY
   return `${day}-${month}-${year}`;
@@ -50,7 +58,6 @@ import {
   ClipboardDocumentListIcon,
 } from "@heroicons/react/16/solid";
 import Modal from "@/Utils/Modal";
-import { ConcentScreen } from "./ConcentScreenRegisteration";
 import { GenericErrorPage } from "./GenericErrorPage";
 
 interface FieldTypeFormList {
@@ -80,11 +87,15 @@ function SadhanaForm({
   const [phoneNumber, setPhoneNumber] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const [checkedItems, setCheckedItems] = useState<any[]>([]);
-  const date = formatDate(new Date());
+  const [sadhanaDateToShow, setSadhanaDateToShow] = useState(
+    formatDateInput(new Date())
+  );
+  const [sadhanaDate, setSadhanaDate] = useState(formatDate(new Date()));
   const [SubmittedSuccess, setSubmittedSuccess] = useState(false);
   const [formData, setFormData] = useState<any>({});
   const [sadhanaFormData, setSadhanaFormData] = useState("");
-  const [visibleSadhana, setVisibleSadhana] = useState("");
+  const [visibleSadhana, setVisibleSadhana] = useState("NO");
+  const [attendedArthi, setAttendedArthi] = useState(false);
 
   const handleShare = (text: any) => {
     // Encode the message for URL
@@ -121,10 +132,9 @@ function SadhanaForm({
             setParticipantData(responseData.content);
           } else {
             if (response.status === 404) {
-              ///consent screen
-
+              setParticipantData({});
               setIsOpen(true);
-              localStorage.setItem("PHONE", phoneNumber);
+              return;
             }
             const errorData = await response.json();
             dispatch({
@@ -144,53 +154,6 @@ function SadhanaForm({
       })();
     }
   }, [phoneNumber]);
-
-  // const handleSubmit = async (e: FormEvent) => {
-  //   e.preventDefault();
-  //   if (phoneNumber === "") {
-  //     dispatch({
-  //       type: "SHOW_TOAST",
-  //       payload: { type: "ERROR", message: "Enter your phone Number" },
-  //     });
-  //     return;
-  //   } else if (phoneNumber.length < 10) {
-  //     dispatch({
-  //       type: "SHOW_TOAST",
-  //       payload: { type: "ERROR", message: "Enter your phone Number" },
-  //     });
-  //     return;
-  //   }
-  //   try {
-  //     const response = await fetch(`/api/participants/phone/${phoneNumber}`);
-  //     if (response.ok) {
-  //       const responseData = await response.json();
-  //       setParticipantData(responseData.content);
-  //     } else {
-  //       if (response.status === 404) {
-  //         console.log(
-  //           "participant with the phone number does not exists  please register"
-  //         );
-  //         push("/participants/registeration");
-  //         localStorage.setItem("PHONE", phoneNumber);
-  //       }
-  //       const errorData = await response.json();
-  //       dispatch({
-  //         type: "SHOW_TOAST",
-  //         payload: {
-  //           type: "ERROR",
-  //           message: errorData.message || errorData.statusText,
-  //         },
-  //       });
-  //     }
-  //   } catch (error: any) {
-  //     dispatch({
-  //       type: "SHOW_TOAST",
-  //       payload: { type: "ERROR", message: error.message },
-  //     });
-  //   } finally {
-  //     setIsLoading(false);
-  //   }
-  // };
 
   async function handleSubmitSadhanaIfNotRegistered(e: FormData) {
     const firstName = e.get("firstName")?.toString();
@@ -248,7 +211,9 @@ function SadhanaForm({
           programId: response?.id,
           participantId: Number(responseData.content.id),
           programName: response?.name,
-          sadhanaDate: date,
+          sadhanaDate: sadhanaDate,
+          attendedArti: attendedArthi,
+          visibleSadhana,
         };
 
         checkedItems.forEach((value: FieldTypeFormList) => {
@@ -265,20 +230,26 @@ function SadhanaForm({
               ?.toString();
           }
         });
+        const formDataObjectToShare = {
+          ...formDataObject,
+          attendedArti: attendedArthi ? "YES" : "NO",
+        };
+        delete formDataObjectToShare.programId;
+        delete formDataObjectToShare.participantId;
         const responseSadhana = await fetch("/api/participants/sadhana", {
           method: "POST",
           headers: headers,
           body: JSON.stringify(formDataObject),
         });
-        if (response.ok) {
+        if (responseSadhana.ok) {
           const responseData = await responseSadhana.json();
-          handleShare(formDataObject);
-          setFormData(formDataObject);
+          handleShare(formDataObjectToShare);
+          setFormData(formDataObjectToShare);
           setSubmittedSuccess(true);
           dispatch({
             type: "SHOW_TOAST",
             payload: {
-              message: responseData.message,
+              message: "Successfully Submitted Sadhana",
               type: "SUCCESS",
             },
           });
@@ -306,10 +277,13 @@ function SadhanaForm({
       programId: response?.id,
       participantId: Number(ParticipantData.id),
       programName: response?.name,
-      sadhanaDate: date,
+      sadhanaDate: sadhanaDate,
+      attendedArti: attendedArthi,
+      visibleSadhana,
     };
     checkedItems.forEach((value: FieldTypeFormList) => {
       if (value.valueType === "Time") {
+        console.log(value);
         formDataObject[value.databaseField] =
           e.get(value.databaseField)?.toString() + ":00.000000";
       } else if (value.valueType === "Number") {
@@ -322,6 +296,12 @@ function SadhanaForm({
           ?.toString();
       }
     });
+    const formDataObjectToShare = {
+      ...formDataObject,
+      attendedArti: attendedArthi ? "YES" : "NO",
+    };
+    delete formDataObjectToShare.programId;
+    delete formDataObjectToShare.participantId;
     const headers = new Headers();
     headers.append("Content-Type", "application/json");
     try {
@@ -332,8 +312,8 @@ function SadhanaForm({
       });
       if (response.ok) {
         const responseData = await response.json();
-        handleShare(formDataObject);
-        setFormData(formDataObject);
+        handleShare(formDataObjectToShare);
+        setFormData(formDataObjectToShare);
         setSubmittedSuccess(true);
         dispatch({
           type: "SHOW_TOAST",
@@ -492,8 +472,8 @@ function SadhanaForm({
                   state.theme.theme === "LIGHT" ? "bg-white" : "bg-stone-950"
                 }`}
               >
-                <p className="text-center font-semibold text-xl text-red-400">
-                  Since You&apos;r Not Registered Fill Additional Details
+                <p className="text-center font-semibold text-xl text-orange-400">
+                  Your Number Is Not Registered Please Fill Additional Details
                 </p>
                 <div className="flex flex-col gap-2">
                   <label htmlFor="firstName" className="font-bold text-lg">
@@ -572,6 +552,26 @@ function SadhanaForm({
                 </div>
               </div>
             )}
+            <div className="flex flex-col gap-2 mb-5">
+              <label htmlFor="Sadhana_Date" className="font-semibold">
+                Sadhana Date
+              </label>
+              <input
+                type="date"
+                id="Sadhana Date"
+                className={`border outline-none focus:ring-4 py-2.5 text-lg rounded-xl px-4 ${
+                  state.theme.theme === "LIGHT"
+                    ? "bg-white border-stone-400 focus:border-blue-500 focus:ring-blue-100"
+                    : "bg-stone-950 border-stone-800 focus:border-blue-700 focus:ring-blue-950"
+                }`}
+                placeholder="enter the date of sadhana"
+                value={sadhanaDateToShow}
+                onChange={(e) => {
+                  setSadhanaDateToShow(e.target.value);
+                  setSadhanaDate(formatDate(new Date(e.target.value)));
+                }}
+              />
+            </div>
             <div className="flex flex-col gap-5 mb-5">
               {checkedItems.map((item, index) => {
                 switch (item.functionName) {
@@ -629,7 +629,11 @@ function SadhanaForm({
                     return (
                       <AAComponent
                         key={index}
-                        onChange={(value) => console.log(value)}
+                        onChange={(value) =>
+                          setAttendedArthi(
+                            value.target.value === "YES" ? true : false
+                          )
+                        }
                         label={"Attended Arthi"}
                       />
                     );
@@ -642,7 +646,7 @@ function SadhanaForm({
                         label={"Visible Sadhana"}
                         onChange={(value: {
                           target: { name: any; value: any };
-                        }) => setVisibleSadhana(value as any)}
+                        }) => setVisibleSadhana(value.target.value)}
                       />
                     );
                   case "MIU":
