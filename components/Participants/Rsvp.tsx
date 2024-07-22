@@ -150,6 +150,7 @@ function Rsvp({ response, level }: responseDataFetched<Sessions> | any) {
         headers,
         body: JSON.stringify(RegisterationData),
       });
+
       if (!responseRegister.ok) {
         const errorData = await responseRegister.json();
         setIsOpenWarning(true);
@@ -164,6 +165,7 @@ function Rsvp({ response, level }: responseDataFetched<Sessions> | any) {
       const responseParticipant = await fetch(
         `/api/participants/phone/${phoneNumber}`
       );
+
       if (!responseParticipant.ok) {
         const errorData = await responseParticipant.json();
         setIsOpenWarning(true);
@@ -183,23 +185,23 @@ function Rsvp({ response, level }: responseDataFetched<Sessions> | any) {
           participantId: responseData.content.id,
           levelId: Number(level.id),
           programId: level.programId,
+          scheduledSessionName: LatestSession.name,
           membersComming,
+          rsvp: answer,
         };
-        const header = new Headers();
-        header.append("Content-Type", "application/json");
-        const response = await fetch(`/api/participants/rsvp/mark`, {
+        const responsersvp = await fetch(`/api/participants/rsvp/mark`, {
           method: "POST",
-          headers: header,
+          headers: headers,
           body: JSON.stringify(formData),
         });
-        if (response.ok) {
-          const responseData = await response.json();
+        if (responsersvp.ok) {
+          const responseData = await responsersvp.json();
           dispatch({
             type: "SHOW_TOAST",
             payload: { type: "SUCCESS", message: responseData.message },
           });
         } else {
-          const errorData = await response.json();
+          const errorData = await responsersvp.json();
           dispatch({
             type: "SHOW_TOAST",
             payload: { type: "ERROR", message: errorData.message },
@@ -207,7 +209,6 @@ function Rsvp({ response, level }: responseDataFetched<Sessions> | any) {
         }
       }
     } catch (error: any) {
-      localStorage.removeItem("PHONE");
       setIsSuccess(true);
       dispatch({
         type: "SHOW_TOAST",

@@ -31,10 +31,9 @@ export async function POST(req: NextRequest) {
       body: JSON.stringify(formData),
     });
     if (response.ok) {
-      const responseData = await response.json();
       return NextResponse.json(
         { message: " Successfully marked rsvp" },
-        { status: response.status }
+        { status: 200 }
       );
     } else {
       if (response.status === 409) {
@@ -49,10 +48,6 @@ export async function POST(req: NextRequest) {
         { status: response.status }
       );
     }
-    return NextResponse.json(
-      { message: " Successfully marked rsvp" },
-      { status: 200 }
-    );
   } catch (error: any) {
     return NextResponse.json(
       { message: error.message || error.title },
