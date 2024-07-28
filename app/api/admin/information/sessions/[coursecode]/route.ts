@@ -9,7 +9,7 @@ export async function GET(
 ) {
   try {
     const response = await fetch(
-      `${SERVER_ENDPOINT}/session/course/${params.coursecode}`
+      `${SERVER_ENDPOINT}/session/course/${params.coursecode}?size=50`
     );
     if (response.ok) {
       const responseData = await response.json();

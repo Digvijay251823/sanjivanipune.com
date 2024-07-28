@@ -1,10 +1,24 @@
 "use client";
-import Modal from "@/Utils/Modal";
 import { useGlobalState } from "@/Utils/State";
 import SubmitHandlerButton from "@/Utils/SubmitHandlerButton";
 import { ChevronDownIcon } from "@heroicons/react/16/solid";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
+
+const specialCharactersRegex = /[!@#$%^&*]/;
+const uppercaseRegex = /[A-Z]/;
+const lowercaseRegex = /[a-z]/;
+const digitRegex = /\d/;
+const minLength = 8;
+const maxLength = 128;
+
+const commonPasswords = [
+  "password",
+  "123456",
+  "123456789",
+  "12345",
+  "12345678",
+]; // Partial list for example
 
 interface VolunteerCreation {
   firstName: string;
@@ -26,8 +40,52 @@ export default function CreateVolunteer() {
   const [incharge, setInCharge] = useState(0);
   const [volunteersArr, setVolunteersArr] = useState([]);
   const [SelectedGender, setSelectedGender] = useState("");
-  const [errors, setErrors] = useState({});
+  const [errors, setErrors] = useState<any>({});
+  const formRef = useRef<HTMLFormElement>(null);
   const router = useRouter();
+  const validatePassword = useCallback((password: string) => {
+    if (password.length < minLength || password.length > maxLength) {
+      setErrors({
+        password: `Password must be between ${minLength} and ${maxLength} characters.`,
+      });
+      return false;
+    }
+
+    if (!uppercaseRegex.test(password)) {
+      setErrors({
+        password: "Password must contain at least one uppercase letter.",
+      });
+      return false;
+    }
+
+    if (!lowercaseRegex.test(password)) {
+      setErrors({
+        password: "Password must contain at least one lowercase letter.",
+      });
+      return false;
+    }
+
+    if (!digitRegex.test(password)) {
+      setErrors({ password: "Password must contain at least one digit." });
+      return false;
+    }
+
+    if (!specialCharactersRegex.test(password)) {
+      setErrors({
+        password:
+          "Password must contain at least one special character (!@#$%^&*).",
+      });
+      return false;
+    }
+
+    if (commonPasswords.includes(password.toLowerCase())) {
+      setErrors({ password: "Password is too common." });
+      return false;
+    }
+
+    setErrors("");
+    return true;
+  }, []);
   useEffect(() => {
     (async () => {
       try {
@@ -51,10 +109,6 @@ export default function CreateVolunteer() {
     })();
   }, [dispatch]);
 
-  function Formvalidatation(formData: VolunteerCreation) {
-    Array(formData).forEach((item) => console.log(item));
-  }
-
   const handleVolunteerCreation = async (e: FormData) => {
     const firstName = e.get("firstName")?.toString();
     const lastName = e.get("lastName")?.toString();
@@ -68,6 +122,9 @@ export default function CreateVolunteer() {
     const address = e.get("address")?.toString();
     const serviceInterests = e.get("serviceInterests")?.toString();
     const currentServices = e.get("currentServices")?.toString();
+    if (password && !validatePassword(password)) {
+      return;
+    }
     const formData: any = {
       firstName,
       lastName,
@@ -82,7 +139,6 @@ export default function CreateVolunteer() {
       serviceInterests,
       currentServices,
     };
-    Formvalidatation(formData);
     const headers = new Headers();
     headers.append("Content-Type", "application/json");
     try {
@@ -132,7 +188,11 @@ export default function CreateVolunteer() {
           Create Volunteer
         </h1>
         <div className="lg:w-[40vw] md:w-[60vw] w-[95vw] max-h-[80vh] overflow-y-auto custom-scrollbar px-1">
-          <form action={handleVolunteerCreation} className="mt-5 w-full">
+          <form
+            action={handleVolunteerCreation}
+            className="mt-5 w-full"
+            ref={formRef}
+          >
             <div className="w-full flex flex-col gap-3">
               <div className="grid md:grid-cols-2 grid-cols-1 gap-5">
                 <div className="flex flex-col gap-2">
@@ -275,8 +335,11 @@ export default function CreateVolunteer() {
                 <input
                   type="password"
                   name="password"
+                  onChange={() => setErrors({})}
                   className={`rounded-xl px-4 py-2 text-lg border transition-all duration-500 ${
-                    state.theme.theme === "LIGHT"
+                    errors.password
+                      ? "ring-4 ring-red-500 outline-none"
+                      : state.theme.theme === "LIGHT"
                       ? "focus:border-blue-600 outline-none focus:ring-4 focus:ring-blue-100 bg-white"
                       : "focus:border-blue-600 outline-none focus:ring-4 focus:ring-blue-950 bg-stone-950 border-stone-800"
                   }`}
@@ -284,6 +347,9 @@ export default function CreateVolunteer() {
                   id="Password"
                   placeholder="***********"
                 />
+                {errors.password && (
+                  <p className="text-red-500">{errors.password}</p>
+                )}
               </div>
               <div className="grid md:grid-cols-2 grid-cols-1 gap-5">
                 <div className="flex flex-col gap-2">

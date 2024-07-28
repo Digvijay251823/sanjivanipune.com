@@ -369,7 +369,7 @@ function ScheduleSession({
             <p>{level.name}</p>
           </div>
         </div>
-        <div className="lg:w-[40vw] md:w-[60vw] w-[95vw] max-h-[80vh] overflow-y-auto custom-scrollbar px-1">
+        <div className="lg:w-[40vw] md:w-[60vw] w-[90vw] max-h-[80vh] overflow-y-auto custom-scrollbar px-1">
           <form action={handleScheduleSession} className="mt-5 w-full">
             <div className="w-full flex flex-col gap-3">
               <div className="flex flex-col gap-2">
@@ -398,6 +398,11 @@ function ScheduleSession({
                   position="down"
                 />
               </div>
+              <p className="flex items-center justify-center text-center text-blue-500">
+                {" "}
+                <i className=" whitespace-nowrap">session description :</i>{" "}
+                {session.description}
+              </p>
               <div className="flex flex-col gap-2">
                 <label className="font-semibold text-lg" htmlFor="Session_name">
                   Session Name

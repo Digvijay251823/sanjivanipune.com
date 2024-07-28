@@ -1,3 +1,4 @@
+"use client";
 import CreateVolunteerComp from "@/components/Modules/Information/volunteers/GenericVolunteer";
 export default function CreateVolunteer() {
   return (

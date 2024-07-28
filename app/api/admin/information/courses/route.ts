@@ -8,7 +8,7 @@ export async function GET(
   { params }: { params: { coursesid: string } }
 ) {
   try {
-    const response = await fetch(`${SERVER_ENDPOINT}/course/`);
+    const response = await fetch(`${SERVER_ENDPOINT}/course/?size=50`);
     if (response.ok) {
       const responseData = await response.json();
       return NextResponse.json(

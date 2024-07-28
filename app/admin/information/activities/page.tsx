@@ -11,7 +11,6 @@ async function getActivities(queryString: string) {
   );
   if (response.ok) {
     const responseData = await response.json();
-    console.log(responseData);
     return responseData;
   } else {
     const errorData = await response.json();

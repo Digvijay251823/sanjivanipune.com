@@ -8,9 +8,10 @@ import ScheduledSessionTable from "./ScheduledSessionsTable";
 import { HidableColumns } from "@/Utils/TableUtils/HidableColumns";
 import SubmitHandlerButton from "@/Utils/SubmitHandlerButton";
 import {
+  ArrowRightIcon,
   ChevronDownIcon,
   DocumentCheckIcon,
-  DocumentIcon,
+  ClipboardDocumentIcon,
   LinkIcon,
   XMarkIcon,
 } from "@heroicons/react/16/solid";
@@ -119,11 +120,17 @@ const Levels: React.FC<responseDataFetched<LevelToDisplay>> = ({
               >
                 <HidableColumns
                   isColumnHeader={true}
-                  stylesClassNames="font-bold px-5 pb-3"
+                  stylesClassNames=" whitespace-nowrap font-bold px-5 pb-3"
                   columnNamesArray={columnNamesArr}
-                  ColumnToHide="Accepting_New_Participants"
+                  ColumnToHide="Program_Name_Level"
                 >
-                  <p className="font-bold">ACCEPTING PARTICIPANTS</p>
+                  <SortableIcon
+                    fieldName={"programName"}
+                    tableHeading={"PROGRAM NAME"}
+                    isSorted={queryArr.some(
+                      (obj) => obj.sort === "programName"
+                    )}
+                  />
                 </HidableColumns>
                 <HidableColumns
                   isColumnHeader={true}
@@ -137,20 +144,7 @@ const Levels: React.FC<responseDataFetched<LevelToDisplay>> = ({
                     isSorted={queryArr.some((obj) => obj.sort === "name")}
                   />
                 </HidableColumns>
-                <HidableColumns
-                  isColumnHeader={true}
-                  stylesClassNames=" whitespace-nowrap font-bold px-5 pb-3"
-                  columnNamesArray={columnNamesArr}
-                  ColumnToHide="Program_Name_Level"
-                >
-                  <SortableIcon
-                    fieldName={"programName"}
-                    tableHeading={"PROGRAM NAME"}
-                    isSorted={queryArr.some(
-                      (obj) => obj.sort === "programName"
-                    )}
-                  />
-                </HidableColumns>
+
                 <HidableColumns
                   isColumnHeader={true}
                   stylesClassNames=" whitespace-nowrap font-bold px-5 pb-3"
@@ -200,6 +194,14 @@ const Levels: React.FC<responseDataFetched<LevelToDisplay>> = ({
                     tableHeading={"PREACHER2"}
                     isSorted={queryArr.some((obj) => obj.sort === "preacher2")}
                   />
+                </HidableColumns>
+                <HidableColumns
+                  isColumnHeader={true}
+                  stylesClassNames="font-bold px-5 pb-3"
+                  columnNamesArray={columnNamesArr}
+                  ColumnToHide="Accepting_New_Participants"
+                >
+                  <p className="font-bold">ACCEPTING PARTICIPANTS</p>
                 </HidableColumns>
                 <HidableColumns
                   isColumnHeader={true}
@@ -261,22 +263,23 @@ const Levels: React.FC<responseDataFetched<LevelToDisplay>> = ({
                 >
                   GENERAL REGISTER
                 </HidableColumns>
+                <HidableColumns
+                  ColumnToHide=""
+                  isColumnHeader={true}
+                  stylesClassNames="font-bold px-5 pb-3"
+                  columnNamesArray={columnNamesArr}
+                >
+                  SESSIONS
+                </HidableColumns>
               </tr>
             </thead>
             <tbody>
               {levelArray.length > 0 ? (
                 levelArray?.map((item: LevelToDisplay, index) => (
                   <React.Fragment key={index}>
-                    <tr
-                      onClick={() => {
-                        if (item) {
-                          toggleRow(index);
-                          setSelectedLevel(item);
-                        }
-                      }}
-                    >
+                    <tr>
                       <HidableColumns
-                        ColumnToHide="Accepting_New_Participants"
+                        ColumnToHide="Program_Name_Level"
                         isColumnHeader={false}
                         columnNamesArray={columnNamesArr}
                         stylesClassNames={`text-center ${
@@ -293,7 +296,7 @@ const Levels: React.FC<responseDataFetched<LevelToDisplay>> = ({
                             : "border-b-stone-800"
                         }`}
                       >
-                        {item.acceptingNewParticipants ? "YES" : "NO"}
+                        {item.programName}
                       </HidableColumns>
                       <HidableColumns
                         ColumnToHide="Course_Name_Level"
@@ -315,26 +318,7 @@ const Levels: React.FC<responseDataFetched<LevelToDisplay>> = ({
                       >
                         {item.name}
                       </HidableColumns>
-                      <HidableColumns
-                        ColumnToHide="Program_Name_Level"
-                        isColumnHeader={false}
-                        columnNamesArray={columnNamesArr}
-                        stylesClassNames={`text-center ${
-                          expandedRow !== index && "border-b"
-                        } ${
-                          customisationObjs.cellSize === "bigger"
-                            ? "py-2"
-                            : customisationObjs.cellSize === "biggest"
-                            ? "py-3"
-                            : "py-1"
-                        } ${
-                          state.theme.theme === "LIGHT"
-                            ? "border-b-gray-200"
-                            : "border-b-stone-800"
-                        }`}
-                      >
-                        {item.programName}
-                      </HidableColumns>
+
                       <HidableColumns
                         ColumnToHide="Coordinator_Level"
                         isColumnHeader={false}
@@ -414,6 +398,26 @@ const Levels: React.FC<responseDataFetched<LevelToDisplay>> = ({
                         }`}
                       >
                         <VolunteerData volunteerid={item.preacher2} />
+                      </HidableColumns>
+                      <HidableColumns
+                        ColumnToHide="Accepting_New_Participants"
+                        isColumnHeader={false}
+                        columnNamesArray={columnNamesArr}
+                        stylesClassNames={`text-center ${
+                          expandedRow !== index && "border-b"
+                        } ${
+                          customisationObjs.cellSize === "bigger"
+                            ? "py-2"
+                            : customisationObjs.cellSize === "biggest"
+                            ? "py-3"
+                            : "py-1"
+                        } ${
+                          state.theme.theme === "LIGHT"
+                            ? "border-b-gray-200"
+                            : "border-b-stone-800"
+                        }`}
+                      >
+                        {item.acceptingNewParticipants ? "YES" : "NO"}
                       </HidableColumns>
                       <HidableColumns
                         ColumnToHide="Display_Name"
@@ -518,7 +522,7 @@ const Levels: React.FC<responseDataFetched<LevelToDisplay>> = ({
                                 <DocumentCheckIcon className="h-5 w-6 " />
                               }
                               whenCopied={
-                                <DocumentIcon className="h-5 w-6 text-green" />
+                                <ClipboardDocumentIcon className="h-5 w-6 text-green" />
                               }
                             />
                           </div>
@@ -559,7 +563,7 @@ const Levels: React.FC<responseDataFetched<LevelToDisplay>> = ({
                                 <DocumentCheckIcon className="h-5 w-6 " />
                               }
                               whenCopied={
-                                <DocumentIcon className="h-5 w-6 text-green" />
+                                <ClipboardDocumentIcon className="h-5 w-6 text-green" />
                               }
                             />
                           </div>
@@ -600,7 +604,7 @@ const Levels: React.FC<responseDataFetched<LevelToDisplay>> = ({
                                 <DocumentCheckIcon className="h-5 w-6 " />
                               }
                               whenCopied={
-                                <DocumentIcon className="h-5 w-6 text-green" />
+                                <ClipboardDocumentIcon className="h-5 w-6 text-green" />
                               }
                             />
                           </div>
@@ -641,13 +645,41 @@ const Levels: React.FC<responseDataFetched<LevelToDisplay>> = ({
                                 <DocumentCheckIcon className="h-5 w-6 " />
                               }
                               whenCopied={
-                                <DocumentIcon className="h-5 w-6 text-green" />
+                                <ClipboardDocumentIcon className="h-5 w-6 text-green" />
                               }
                             />
                           </div>
                         ) : (
                           <div className="text-gray-400">Not Configured</div>
                         )}
+                      </HidableColumns>
+                      <HidableColumns
+                        isColumnHeader={false}
+                        stylesClassNames={`text-center ${
+                          expandedRow !== index && "border-b"
+                        } ${
+                          customisationObjs.cellSize === "bigger"
+                            ? "py-2"
+                            : customisationObjs.cellSize === "biggest"
+                            ? "py-3"
+                            : "py-1"
+                        } ${
+                          state.theme.theme === "LIGHT"
+                            ? "border-b-gray-200"
+                            : "border-b-stone-800"
+                        }`}
+                      >
+                        <p
+                          onClick={() => {
+                            if (item) {
+                              toggleRow(index);
+                              setSelectedLevel(item);
+                            }
+                          }}
+                          className="flex items-center text-blue-700 gap-2 cursor-pointer"
+                        >
+                          SESSIONS <ArrowRightIcon className="h-5 w-5" />
+                        </p>
                       </HidableColumns>
                     </tr>
                     {item && expandedRow === index && (
@@ -910,7 +942,6 @@ function AddLevel({
                       : "focus:border-blue-600 outline-none focus:ring-4 focus:ring-blue-950 bg-stone-950 border-stone-800"
                   }`}
                   id="Course_Name"
-                  placeholder="Discover youself"
                 />
               </div>
               <div className="flex flex-col gap-2">
@@ -928,7 +959,6 @@ function AddLevel({
                       : "focus:border-blue-600 outline-none focus:ring-4 focus:ring-blue-950 bg-stone-950 border-stone-800"
                   }`}
                   id="Course_Description"
-                  placeholder="something description"
                 />
               </div>
               <div className="grid md:grid-cols-2 grid-cols-1 gap-5">
@@ -1001,7 +1031,6 @@ function AddLevel({
                         : "focus:border-blue-600 outline-none focus:ring-4 focus:ring-blue-950 bg-stone-950 border-stone-800"
                     }`}
                     id="expected_Start_Date"
-                    placeholder="expected Start Date"
                   />
                 </div>
                 <div className="flex flex-col gap-2">
@@ -1021,7 +1050,6 @@ function AddLevel({
                         : "focus:border-blue-600 outline-none focus:ring-4 focus:ring-blue-950 bg-stone-950 border-stone-800"
                     }`}
                     id="expected_End_Date"
-                    placeholder="expected end date"
                   />
                 </div>
               </div>
@@ -1098,7 +1126,6 @@ function AddLevel({
                     }`}
                     id="displayName"
                     name="displayName"
-                    placeholder="Enter the display name"
                   />
                 </div>
                 <div className="flex flex-col">
@@ -1132,7 +1159,6 @@ function AddLevel({
                     }`}
                     id="posterUrl"
                     name="posterUrl"
-                    placeholder="https://www.iskconpune.com/ram-navami-isk/"
                   />
                 </div>
               </div>
