@@ -166,6 +166,8 @@ export default function CreateVolunteer() {
         type: "SHOW_TOAST",
         payload: { message: error.message, type: "ERROR" },
       });
+    } finally {
+      formRef.current?.reset();
     }
   };
 
