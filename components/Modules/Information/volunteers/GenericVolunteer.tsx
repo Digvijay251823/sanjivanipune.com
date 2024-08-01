@@ -118,11 +118,16 @@ export default function CreateVolunteer() {
     const age = e.get("age")?.toString();
     const email = e.get("email")?.toString().toLocaleLowerCase();
     const password = e.get("password")?.toString();
+    const confirmpassword = e.get("confirmpassword")?.toString();
     const gender = SelectedGender;
     const address = e.get("address")?.toString();
     const serviceInterests = e.get("serviceInterests")?.toString();
     const currentServices = e.get("currentServices")?.toString();
     if (password && !validatePassword(password)) {
+      return;
+    }
+    if (password !== confirmpassword) {
+      setErrors({ password: "password and Confirm password should be same" });
       return;
     }
     const formData: any = {
@@ -215,7 +220,6 @@ export default function CreateVolunteer() {
                     }`}
                     required
                     id="first_name"
-                    placeholder="John"
                   />
                 </div>
                 <div className="flex flex-col gap-2">
@@ -236,7 +240,6 @@ export default function CreateVolunteer() {
                     }`}
                     required
                     id="last_Name"
-                    placeholder="Doe"
                   />
                 </div>
               </div>
@@ -256,7 +259,6 @@ export default function CreateVolunteer() {
                       : "focus:border-blue-600 outline-none focus:ring-4 focus:ring-blue-950 bg-stone-950 border-stone-800"
                   }`}
                   id="Initiated_Name"
-                  placeholder="Govindnath Das"
                 />
               </div>
               <div className="grid md:grid-cols-2 grid-cols-1 gap-5">
@@ -278,7 +280,6 @@ export default function CreateVolunteer() {
                     }`}
                     required
                     id="wa_Number"
-                    placeholder="7878899532"
                     maxLength={10}
                   />
                 </div>
@@ -300,7 +301,6 @@ export default function CreateVolunteer() {
                     }`}
                     required
                     id="contact_Number"
-                    placeholder="7878899543"
                     maxLength={10}
                   />
                 </div>
@@ -323,7 +323,6 @@ export default function CreateVolunteer() {
                   }`}
                   required
                   id="Email"
-                  placeholder="xyz@example.com"
                 />
               </div>
               <div className="flex flex-col gap-2">
@@ -347,7 +346,34 @@ export default function CreateVolunteer() {
                   }`}
                   required
                   id="Password"
-                  placeholder="***********"
+                  placeholder="**********"
+                />
+                {errors.password && (
+                  <p className="text-red-500">{errors.password}</p>
+                )}
+              </div>
+              <div className="flex flex-col gap-2">
+                <label
+                  className="font-semibold text-lg"
+                  htmlFor="confirmpassword"
+                  id="confirmpassword"
+                >
+                  Confirm Password
+                </label>
+                <input
+                  type="password"
+                  name="confirmpassword"
+                  onChange={() => setErrors({})}
+                  className={`rounded-xl px-4 py-2 text-lg border transition-all duration-500 ${
+                    errors.password
+                      ? "ring-4 ring-red-500 outline-none"
+                      : state.theme.theme === "LIGHT"
+                      ? "focus:border-blue-600 outline-none focus:ring-4 focus:ring-blue-100 bg-white"
+                      : "focus:border-blue-600 outline-none focus:ring-4 focus:ring-blue-950 bg-stone-950 border-stone-800"
+                  }`}
+                  required
+                  id="confirmpassword"
+                  placeholder="**********"
                 />
                 {errors.password && (
                   <p className="text-red-500">{errors.password}</p>
@@ -372,7 +398,6 @@ export default function CreateVolunteer() {
                     }`}
                     required
                     id="Age"
-                    placeholder="37"
                   />
                 </div>
                 <div className="flex flex-col gap-2">
@@ -408,7 +433,6 @@ export default function CreateVolunteer() {
                   }`}
                   required
                   id="Address"
-                  placeholder="Pune-37"
                 />
               </div>
               <div className="grid md:grid-cols-2 grid-cols-1 gap-5">
@@ -430,7 +454,6 @@ export default function CreateVolunteer() {
                     }`}
                     required
                     id="Service_interests"
-                    placeholder="Chanting Holy Name"
                   />
                 </div>
                 <div className="flex flex-col gap-2">
@@ -451,7 +474,6 @@ export default function CreateVolunteer() {
                     }`}
                     required
                     id="Current_Service"
-                    placeholder="Temple Seva"
                   />
                 </div>
               </div>
