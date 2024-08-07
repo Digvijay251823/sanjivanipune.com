@@ -7,7 +7,7 @@ import React from "react";
 async function getScheduledSessions(levelId: string) {
   unstable_noStore();
   const response = await fetch(
-    `${SERVER_ENDPOINT}/session/scheduled/level/${levelId}?sort=startTime,desc`
+    `${SERVER_ENDPOINT}/session/scheduled/level/${levelId}?sort=startTime,asc`
   );
   if (response.ok) {
     const responseData = await response.json();
@@ -45,6 +45,7 @@ async function page({ params }: { params: { levelid: string } }) {
   if (!response || response.content.length === 0) {
     return <NotExistsResource message="No Scheduled sessions for this level" />;
   }
+
   return (
     <div>
       <Rsvp response={response} level={responseLevel} />

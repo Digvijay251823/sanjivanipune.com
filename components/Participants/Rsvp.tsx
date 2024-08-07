@@ -1,5 +1,6 @@
 "use client";
 import { SERVER_ENDPOINT } from "@/ConfigFetch";
+import DateFormatter from "@/Utils/DateFormatter";
 import LoadingComponent from "@/Utils/Icons/LoadingComponent";
 import { useGlobalState } from "@/Utils/State";
 import { POST } from "@/actions/POSTRequests";
@@ -49,7 +50,6 @@ function Rsvp({ response, level }: responseDataFetched<Sessions> | any) {
 
     response?.content?.forEach((session: ScheduledSessions, index: number) => {
       if (new Date(session.startTime) > new Date()) {
-        console.log(session);
         future.push(session);
       }
     });
@@ -219,7 +219,6 @@ function Rsvp({ response, level }: responseDataFetched<Sessions> | any) {
   }
 
   async function handleRsvp(e: FormData) {
-    // setIsLoading(true);
     const formData: any = {
       scheduledSessionId: LatestSession.id,
       participantId: ParticipantData.id,
@@ -487,12 +486,19 @@ function Rsvp({ response, level }: responseDataFetched<Sessions> | any) {
             {Object.keys(LatestSession).length > 0 ? (
               <div>
                 <div
-                  className={`flex items-center gap-3 px-3 py-2.5 rounded-2xl font-bold text-2xl my-5 ${
+                  className={` rounded-2xl font-bold text-2xl my-1 ${
                     state.theme.theme === "LIGHT" ? "bg-white" : "bg-stone-950"
                   }`}
                 >
-                  <p className=" whitespace-nowrap">Session :</p>
-                  <p className="mx-5">{LatestSession?.name}</p>
+                  <div className="flex items-center gap-3 px-3 py-2.5">
+                    <p className=" whitespace-nowrap">Session :</p>
+                    <p className="mx-5">{LatestSession?.name}</p>
+                  </div>
+                  <div className="flex items-center font-semibold gap-2 text-lg px-3">
+                    <p>Start Time</p>
+                    {" : "}
+                    <DateFormatter dateString={LatestSession?.startTime} />
+                  </div>
                 </div>
                 <div className="flex flex-col gap-3 mb-6">
                   <label htmlFor="" className="font-bold">
@@ -509,70 +515,69 @@ function Rsvp({ response, level }: responseDataFetched<Sessions> | any) {
                     }`}
                   />
                 </div>
-                {phoneNumber.length > 0 && (
-                  <div className="flex items-center gap-5">
-                    {rsvpResponse ? (
-                      <>
-                        {isLoading ? (
-                          <LoadingComponent />
-                        ) : (
-                          <button
-                            type="submit"
-                            onClick={() => setAnswer("NO")}
-                            className={`w-full rounded-lg text-xl py-2 ${
-                              state.theme.theme === "LIGHT"
-                                ? "bg-red-100 text-red-600"
-                                : "bg-red-950 text-red-600 bg-opacity-35"
-                            }`}
-                            disabled={isLoading}
-                          >
-                            Cancel
-                          </button>
-                        )}
-                      </>
-                    ) : (
-                      <div
-                        className={`w-full rounded-lg text-xl py-1.5 flex justify-center ${
-                          state.theme.theme === "LIGHT"
-                            ? "bg-red-100 text-red-600"
-                            : "bg-red-950 text-red-600 bg-opacity-35"
-                        }`}
-                      >
-                        <XMarkIcon className="h-8 w-8" />
-                      </div>
-                    )}
-                    {rsvpResponse ? (
-                      <div
-                        className={`w-full rounded-lg text-xl py-1.5 flex justify-center ${
-                          state.theme.theme === "LIGHT"
-                            ? "bg-blue-100 text-blue-600"
-                            : "bg-blue-950 text-blue-600 bg-opacity-25"
-                        }`}
-                      >
-                        <CheckIcon className="h-8 w-8" />
-                      </div>
-                    ) : (
-                      <>
-                        {isLoading ? (
-                          <LoadingComponent />
-                        ) : (
-                          <button
-                            onClick={() => setAnswer("YES")}
-                            type="submit"
-                            className={`w-full rounded-lg text-xl py-2 ${
-                              state.theme.theme === "LIGHT"
-                                ? "bg-blue-100 text-blue-600"
-                                : "bg-blue-950 text-blue-600 bg-opacity-25"
-                            }`}
-                            disabled={isLoading}
-                          >
-                            Confirm
-                          </button>
-                        )}
-                      </>
-                    )}
-                  </div>
-                )}
+
+                <div className="flex items-center gap-5">
+                  {rsvpResponse ? (
+                    <>
+                      {isLoading ? (
+                        <LoadingComponent />
+                      ) : (
+                        <button
+                          type="submit"
+                          onClick={() => setAnswer("NO")}
+                          className={`w-full rounded-lg text-xl py-2 ${
+                            state.theme.theme === "LIGHT"
+                              ? "bg-red-100 text-red-600"
+                              : "bg-red-950 text-red-600 bg-opacity-35"
+                          }`}
+                          disabled={isLoading && phoneNumber.length === 0}
+                        >
+                          Cancel
+                        </button>
+                      )}
+                    </>
+                  ) : (
+                    <div
+                      className={`w-full rounded-lg text-xl py-1.5 flex justify-center ${
+                        state.theme.theme === "LIGHT"
+                          ? "bg-red-100 text-red-600"
+                          : "bg-red-950 text-red-600 bg-opacity-35"
+                      }`}
+                    >
+                      <XMarkIcon className="h-8 w-8" />
+                    </div>
+                  )}
+                  {rsvpResponse ? (
+                    <div
+                      className={`w-full rounded-lg text-xl py-1.5 flex justify-center ${
+                        state.theme.theme === "LIGHT"
+                          ? "bg-blue-100 text-blue-600"
+                          : "bg-blue-950 text-blue-600 bg-opacity-25"
+                      }`}
+                    >
+                      <CheckIcon className="h-8 w-8" />
+                    </div>
+                  ) : (
+                    <>
+                      {isLoading ? (
+                        <LoadingComponent />
+                      ) : (
+                        <button
+                          onClick={() => setAnswer("YES")}
+                          type="submit"
+                          className={`w-full rounded-lg text-xl py-2 ${
+                            state.theme.theme === "LIGHT"
+                              ? "bg-blue-100 text-blue-600"
+                              : "bg-blue-950 text-blue-600 bg-opacity-25"
+                          }`}
+                          disabled={isLoading || phoneNumber.length < 10}
+                        >
+                          Confirm
+                        </button>
+                      )}
+                    </>
+                  )}
+                </div>
               </div>
             ) : (
               <p className="text-xl font-bold text-red-400 text-center">
