@@ -11,7 +11,7 @@ export async function GET(req: NextRequest, res: NextResponse) {
   headers.append("Authorization", `${auth}`);
 
   try {
-    const response = await fetch(`${SERVER_ENDPOINT}/volunteer/`, {
+    const response = await fetch(`${SERVER_ENDPOINT}/volunteer/?size=100`, {
       method: "GET",
       headers: headers,
     });
